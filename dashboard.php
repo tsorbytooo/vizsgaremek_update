@@ -83,16 +83,25 @@ $percent = ($daily_limit > 0) ? ($current_total / $daily_limit) * 100 : 0;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - SIGMA Kalória</title>
+    <title>Kalória Center</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="dashboard-container">
     
-    <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
-        <h2 style="margin:0;">Szia, <?php echo htmlspecialchars($u_data['name']); ?>!</h2>
-        <a href="logout.php" class="delete-btn" style="padding:10px 20px;">Kijelentkezés</a>
+    <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; position: relative;">
+    <h2>Szia, <?php echo htmlspecialchars($u_data['name']); ?>!</h2>
+    
+    <div class="dropdown">
+        <button class="btn-primary dropdown-btn">Továbbiak ▼</button>
+        <div class="dropdown-content">
+            <a href="profile.php">Profil szerkesztése</a>
+            <a href="premium.php">Prémium tagság</a>
+            <hr>
+            <a href="logout.php" style="color: var(--danger);">Kijelentkezés</a>
+        </div>
+    </div>
     </header>
 
     <div class="dashboard-grid">
