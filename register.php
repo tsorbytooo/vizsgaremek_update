@@ -51,16 +51,17 @@ if (isset($_POST['reg'])) {
             <input type="text" name="name" required placeholder="Szöke Császár Bálint">
         </div>
 
-        <div class="form-row">
+        
             <div class="form-group">
                 <label>E-mail cím</label>
-                <input type="email" name="email" required placeholder="balint@sigma.hu">
+                <input type="text" name="email" required placeholder="balint@sigma.hu">
             </div>
+            
             <div class="form-group">
                 <label>Jelszó</label>
                 <input type="password" name="password" required placeholder="********">
             </div>
-        </div>
+        
 
         <div class="form-row">
             <div class="form-group">
