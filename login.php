@@ -50,3 +50,9 @@ if (isset($_POST['belepes'])) {
     <p>Még nincs fiókod? <a href="register.php">Regisztrálj itt!</a></p>
 </body>
 </html>
+
+<script>
+if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+}
+</script>

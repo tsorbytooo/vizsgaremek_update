@@ -14,7 +14,7 @@ $msg = "";
 if (isset($_POST['go_premium'])) {
     $update_sql = "UPDATE users SET premium = 1 WHERE id = $user_id";
     if (mysqli_query($conn, $update_sql)) {
-        header("Location: dashboard.php?msg=Gratulálunk! Mostantól SIGMA Premium tag vagy!");
+        header("Location: dashboard.php?msg=Gratulálunk! Mostantól Premium tag vagy!");
         exit();
     } else {
         $msg = "Hiba történt a tranzakció során.";

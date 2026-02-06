@@ -110,6 +110,64 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
     <meta charset="UTF-8">
     <title>Dashboard</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* SÖTÉT TÉMA STÍLUSOK */
+        body.dark-mode {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+        body.dark-mode .card-section {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        body.dark-mode input {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+            border-color: #334155 !important;
+        }
+        body.dark-mode #menuContent {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+        }
+        body.dark-mode #menuContent a {
+            color: #f8fafc !important;
+            border-bottom-color: #334155 !important;
+        }
+        body.dark-mode table, body.dark-mode tr, body.dark-mode td {
+            border-color: #334155 !important;
+        }
+        body.dark-mode .info-item {
+            background-color: #0f172a !important;
+        }
+        body.dark-mode .fav-box {
+            background-color: #334155 !important;
+            border-color: #475569 !important;
+            color: #f8fafc !important;
+        }
+        body.dark-mode .manual-add-box {
+            background-color: #0f172a !important;
+            color: #f8fafc !important;
+        }
+
+        /* --- PROGRESS BAR MAGASÍTÁS --- */
+        .progress-container {
+            height: 30px !important; /* Fix magasság */
+            background-color: #e2e8f0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        .progress-bar {
+            height: 30px !important; /* Fix magasság */
+            line-height: 30px !important; /* Szöveg középre */
+            font-size: 15px !important;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            display: block; /* Biztos ami biztos */
+        }
+    </style>
 </head>
 <body>
 
@@ -117,15 +175,21 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
     <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; position: relative;">
         <h2 style="margin: 0;">Szia, <?php echo htmlspecialchars($u_data['name']); ?>!</h2>
         
-        <div style="position: relative; display: inline-block;">
-            <button type="button" id="menuBtn" style="background-color: #4361ee; color: white; padding: 12px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; font-family: inherit; display: block; transition: none !important;">
-                Továbbiak ▼
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <button id="themeToggle" style="background: white; border: 1px solid #ddd; padding: 10px; border-radius: 50%; cursor: pointer; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                <span id="themeIcon">🌙</span>
             </button>
-            
-            <div id="menuContent" style="display: none; position: absolute; right: 0; top: 55px; background-color: white; min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-radius: 12px; z-index: 99999; border: 1px solid #edf2f7; overflow: hidden;">
-                <a href="profile.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">👤 Profil szerkesztése</a>
-                <a href="premium.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">⭐ Prémium tagság</a>
-                <a href="logout.php" style="color: #e71d36; padding: 14px 20px; text-decoration: none; display: block; font-weight: bold;">🚪 Kijelentkezés</a>
+
+            <div style="position: relative; display: inline-block;">
+                <button type="button" id="menuBtn" style="background-color: #4361ee; color: white; padding: 12px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; font-family: inherit; display: block; transition: none !important;">
+                    Továbbiak ▼
+                </button>
+                
+                <div id="menuContent" style="display: none; position: absolute; right: 0; top: 55px; background-color: white; min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-radius: 12px; z-index: 99999; border: 1px solid #edf2f7; overflow: hidden;">
+                    <a href="profile.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">👤 Profil szerkesztése</a>
+                    <a href="premium.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">⭐ Prémium tagság</a>
+                    <a href="logout.php" style="color: #e71d36; padding: 14px 20px; text-decoration: none; display: block; font-weight: bold;">🚪 Kijelentkezés</a>
+                </div>
             </div>
         </div>
     </header>
@@ -133,22 +197,38 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
     <script>
         const btn = document.getElementById('menuBtn');
         const box = document.getElementById('menuContent');
+        const themeBtn = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.innerText = '☀️';
+            themeBtn.style.backgroundColor = '#1e293b';
+            themeBtn.style.borderColor = '#334155';
+        }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeIcon.innerText = isDark ? '☀️' : '🌙';
+            
+            if(isDark) {
+                themeBtn.style.backgroundColor = '#1e293b';
+                themeBtn.style.borderColor = '#334155';
+            } else {
+                themeBtn.style.backgroundColor = 'white';
+                themeBtn.style.borderColor = '#ddd';
+            }
+        });
 
         btn.addEventListener('mousedown', function(e) {
             e.preventDefault();
-            if (box.style.display === "block") {
-                box.style.display = "none";
-            } else {
-                box.style.display = "block";
-                box.offsetHeight; 
-            }
+            if (box.style.display === "block") { box.style.display = "none"; } else { box.style.display = "block"; box.offsetHeight; }
             e.stopPropagation();
         });
-
         document.addEventListener('mousedown', function(e) {
-            if (e.target !== btn && !box.contains(e.target)) {
-                box.style.display = "none";
-            }
+            if (e.target !== btn && !box.contains(e.target)) { box.style.display = "none"; }
         });
     </script>
 
@@ -183,7 +263,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             $my_favs_sql = "SELECT f.* FROM foods f JOIN favorites fav ON f.id = fav.food_id WHERE fav.user_id = $user_id";
             $my_favs_res = mysqli_query($conn, $my_favs_sql);
             if (mysqli_num_rows($my_favs_res) > 0): ?>
-                <div style="margin-bottom: 20px; padding: 10px; background: #fffcf0; border-radius: 12px; border: 1px solid #ffeeba;">
+                <div class="fav-box" style="margin-bottom: 20px; padding: 10px; background: #fffcf0; border-radius: 12px; border: 1px solid #ffeeba;">
                     <small style="color: #ff9f1c; font-weight: bold; display: block; margin-bottom: 5px;">Kedvenceid:</small>
                     <div style="display: flex; flex-wrap: wrap; gap: 5px;">
                         <?php while($mf = mysqli_fetch_assoc($my_favs_res)): ?>
@@ -218,7 +298,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                         <td style="text-align: right;">
                             <form method="POST" style="display: flex; gap: 5px; justify-content: flex-end;">
                                 <input type="hidden" name="food_id" value="<?php echo $f['id']; ?>">
-                                <input type="number" name="quantity" value="100" style="width: 60px;">
+                                <input type="number" name="quantity" value="100" style="width: 80px; padding: 6px; border-radius: 8px; border: 1px solid #ddd;">
                                 <button type="submit" name="add_to_log" class="btn-success">+</button>
                             </form>
                         </td>
@@ -226,7 +306,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                     <?php endforeach; ?>
                 </table>
             <?php elseif(isset($_GET['q'])): ?>
-                <div style="background: #f1f4ff; padding: 15px; border-radius: 12px; margin-top: 10px;">
+                <div class="manual-add-box" style="background: #f1f4ff; padding: 15px; border-radius: 12px; margin-top: 10px;">
                     <p style="font-size: 14px; font-weight: bold;">Nincs ilyen étel? Add hozzá manuálisan!</p>
                     <form method="POST" enctype="multipart/form-data" style="display: grid; gap: 10px;">
                         <input type="text" name="food_name" value="<?php echo htmlspecialchars($_GET['q']); ?>" placeholder="Étel neve" required>
@@ -291,3 +371,4 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
 
 </body>
 </html>
+
