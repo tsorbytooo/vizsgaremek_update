@@ -58,20 +58,17 @@ $u_data = mysqli_fetch_assoc($u_res);
                 <strong>📊 Részletes Statisztikák</strong>
                 <p style="font-size: 0.9rem; color: var(--text-muted); margin: 5px 0 0;">Lásd a fehérje, szénhidrát és zsír beviteledet is (Makrók).</p>
             </div>
-            <div class="info-item" style="text-align: left; border-left: 4px solid #2ec4b6;">
-                <strong>🥗 Egyedi ételek mentése</strong>
-                <p style="font-size: 0.9rem; color: var(--text-muted); margin: 5px 0 0;">Ments el saját recepteket és egyedi alapanyagokat örökre.</p>
-            </div>
+            
         </div>
 
         <form method="POST">
             <button type="submit" name="go_premium" class="btn-primary" style="background: linear-gradient(45deg, #ff9f1c, #ffbf69); font-size: 1.1rem; padding: 18px;">
-                Prémium Aktiválása (0 Ft / hó)
+                Prémium Aktiválása (4 990 Ft / hó)
             </button>
         </form>
         
         <p style="text-align: center; margin-top: 20px; font-size: 0.85rem; color: var(--text-muted);">
-            Ez egy bemutató funkció. A vizsgaremek keretében az előfizetés azonnal aktívvá válik.
+            
         </p>
     <?php endif; ?>
 
