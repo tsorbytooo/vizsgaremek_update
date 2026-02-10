@@ -46,7 +46,12 @@ $u_data = mysqli_fetch_assoc($u_res);
         <div style="background: #f0fdf4; border: 1px solid #10b981; padding: 20px; border-radius: 12px; text-align: center;">
             <h3 style="color: #10b981; margin: 0;">Már Premium tag vagy!</h3>
             <p style="margin-bottom: 20px;">Élvezd a korlátlan lehetőségeket.</p>
-            <a href="dashboard.php" class="btn-primary" style="text-decoration: none; display: inline-block;">Vissza a Dashboardra</a>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                <a href="dashboard.php" class="btn-primary" style="text-decoration: none; display: inline-block; width: 100%; max-width: 300px;">Vissza a Dashboardra</a>
+                
+                <a href="cancel_premium.php" onclick="return confirm('Biztosan lemondod a prémium tagságot? Elveszíted a makrók követését!')" style="color: #e71d36; text-decoration: none; font-size: 0.9rem; margin-top: 10px; border: 1px solid #e71d36; padding: 8px 15px; border-radius: 8px;">Prémium előfizetés lemondása</a>
+            </div>
         </div>
     <?php else: ?>
         <div class="info-grid" style="grid-template-columns: 1fr; gap: 15px; margin-bottom: 30px;">
@@ -61,11 +66,11 @@ $u_data = mysqli_fetch_assoc($u_res);
             
         </div>
 
-        <form method="POST">
-            <button type="submit" name="go_premium" class="btn-primary" style="background: linear-gradient(45deg, #ff9f1c, #ffbf69); font-size: 1.1rem; padding: 18px;">
-                Prémium Aktiválása (4 990 Ft / hó)
-            </button>
-        </form>
+        <div style="text-align: center;">
+            <a href="checkout.php" class="btn-primary" style="background: linear-gradient(45deg, #ff9f1c, #ffbf69); font-size: 1.1rem; padding: 18px; text-decoration: none; display: block; border-radius: 12px; font-weight: bold;">
+                Tovább a fizetéshez (4 990 Ft / hó)
+            </a>
+        </div>
         
         <p style="text-align: center; margin-top: 20px; font-size: 0.85rem; color: var(--text-muted);">
             

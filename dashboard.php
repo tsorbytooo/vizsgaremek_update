@@ -94,13 +94,24 @@ if (!empty($_GET['q'])) {
     while($row = mysqli_fetch_assoc($s_res)) $search_results[] = $row;
 }
 
-// --- MAI ÖSSZESÍTÉS ---
-$sum_sql = "SELECT SUM((f.calories_100g/100)*l.quantity) as total_cal 
+// --- MAI ÖSSZESÍTÉS (BŐVÍTETT: MAKRÓKKAL) ---
+$sum_sql = "SELECT 
+                SUM((f.calories_100g/100)*l.quantity) as total_cal,
+                SUM((f.protein_100g/100)*l.quantity) as total_protein,
+                SUM((f.carbs_100g/100)*l.quantity) as total_carbs,
+                SUM((f.fat_100g/100)*l.quantity) as total_fat
             FROM user_food_log l 
             JOIN foods f ON l.food_id = f.id 
             WHERE l.user_id = $user_id AND l.log_date = '$today'";
 $sum_res = mysqli_query($conn, $sum_sql);
-$current_cal = mysqli_fetch_assoc($sum_res)['total_cal'] ?? 0;
+$daily_data = mysqli_fetch_assoc($sum_res);
+
+// Értékek kinyerése (ha nincs adat, akkor 0)
+$current_cal = $daily_data['total_cal'] ?? 0;
+$current_protein = $daily_data['total_protein'] ?? 0;
+$current_carbs = $daily_data['total_carbs'] ?? 0;
+$current_fat = $daily_data['total_fat'] ?? 0;
+
 $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
 ?>
 
@@ -149,6 +160,17 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             background-color: #0f172a !important;
             color: #f8fafc !important;
         }
+        /* Sötét mód makró kártya javítás */
+        body.dark-mode .premium-blur-box {
+            background-color: #334155 !important;
+            border-color: #475569 !important;
+        }
+        body.dark-mode .premium-overlay {
+            background: rgba(30, 41, 59, 0.8) !important;
+        }
+        body.dark-mode .premium-overlay strong {
+            color: #f8fafc !important;
+        }
 
         /* --- PROGRESS BAR MAGASÍTÁS --- */
         .progress-container {
@@ -165,7 +187,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             font-weight: bold;
             color: white;
             text-align: center;
-            display: block; /* Biztos ami biztos */
+            display: block; 
         }
     </style>
 </head>
@@ -250,7 +272,51 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             <p style="text-align: center; margin-top: 15px; color: var(--text-muted);">
                 Jelenleg: <strong><?php echo round($current_cal); ?> kcal</strong> / <?php echo $limit; ?> kcal
             </p>
-        </section>
+
+            <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee;">
+                <h4 style="margin: 0 0 15px 0;">Makrók (Napi bevitel)</h4>
+
+                <?php if ($u_data['premium'] == 1): ?>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center;">
+                        
+                        <div>
+                            <small style="color: #4361ee; font-weight: bold;">Fehérje</small>
+                            <div style="background: #e0e7ff; height: 8px; border-radius: 4px; margin: 5px 0; overflow: hidden;">
+                                <div style="background: #4361ee; height: 100%; width: 100%;"></div> 
+                            </div>
+                            <small><?php echo round($current_protein); ?>g</small>
+                        </div>
+
+                        <div>
+                            <small style="color: #f72585; font-weight: bold;">Szénhidrát</small>
+                            <div style="background: #ffe0f0; height: 8px; border-radius: 4px; margin: 5px 0; overflow: hidden;">
+                                <div style="background: #f72585; height: 100%; width: 100%;"></div>
+                            </div>
+                            <small><?php echo round($current_carbs); ?>g</small>
+                        </div>
+
+                        <div>
+                            <small style="color: #f8961e; font-weight: bold;">Zsír</small>
+                            <div style="background: #fff5cc; height: 8px; border-radius: 4px; margin: 5px 0; overflow: hidden;">
+                                <div style="background: #f8961e; height: 100%; width: 100%;"></div>
+                            </div>
+                            <small><?php echo round($current_fat); ?>g</small>
+                        </div>
+                    </div>
+
+                <?php else: ?>
+                    <div class="premium-blur-box" style="position: relative; overflow: hidden; border-radius: 10px; background: #f8f9fa; border: 1px dashed #ccc; padding: 20px; text-align: center;">
+                        <div style="filter: blur(4px); opacity: 0.5; user-select: none;">
+                            Fehérje: 120g | Szénhidrát: 200g | Zsír: 50g
+                        </div>
+                        <div class="premium-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,255,255,0.6);">
+                            <strong style="color: #2b2d42; margin-bottom: 5px;">🔒 Prémium funkció</strong>
+                            <a href="premium.php" style="background: #4361ee; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: bold;">Előfizetés</a>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+            </section>
 
         <section class="card-section">
             <h3>Mit ettél ma?</h3>
@@ -371,4 +437,3 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
 
 </body>
 </html>
-
