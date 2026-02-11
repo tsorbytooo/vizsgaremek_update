@@ -31,8 +31,8 @@ body.dark-mode {
 
 body {
     font-family: 'Inter', -apple-system, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-main);
+    background-color: var(--bg-color) !important; /* Hogy felülbírálja a beégetett stílusokat */
+    color: var(--text-main) !important;
     margin: 0;
     line-height: 1.6;
 }
@@ -47,7 +47,7 @@ body {
 .auth-card {
     max-width: 400px;
     margin: 100px auto;
-    background: var(--card-bg);
+    background: var(--card-bg) !important;
     padding: 40px;
     border-radius: 20px;
     box-shadow: var(--shadow);
@@ -55,7 +55,7 @@ body {
 }
 
 .card-section {
-    background-color: var(--card-bg);
+    background-color: var(--card-bg) !important;
     border-radius: 16px;
     padding: 24px;
     box-shadow: var(--shadow);
@@ -80,14 +80,15 @@ input[type="text"],
 input[type="number"],
 input[type="email"],
 input[type="password"],
-select {
+select,
+textarea {
     width: 100%;
     padding: 12px 16px;
     margin-bottom: 20px;
     border: 1px solid var(--border-color);
     border-radius: 10px;
-    background-color: var(--input-bg);
-    color: var(--text-main);
+    background-color: var(--input-bg) !important;
+    color: var(--text-main) !important;
     font-size: 14px;
     outline: none;
 }
@@ -99,7 +100,7 @@ input:focus {
 /* --- GOMBOK --- */
 .btn-primary {
     background-color: var(--primary);
-    color: white;
+    color: white !important;
     padding: 12px 24px;
     border: none;
     border-radius: 10px;
@@ -149,9 +150,10 @@ input:focus {
 }
 
 .info-item {
-    background: var(--bg-color);
+    background: var(--card-bg) !important; /* Változtatva: kártya háttér legyen, hogy ne olvadjon bele a fő háttérbe */
     padding: 16px;
     border-radius: 12px;
+    border: 1px solid var(--border-color);
 }
 
 .info-item span {
@@ -184,6 +186,7 @@ td {
     padding: 14px 8px;
     border-bottom: 1px solid var(--border-color);
     vertical-align: middle;
+    color: var(--text-main);
 }
 
 tr:last-child td {
@@ -263,7 +266,7 @@ img {
     transform: scale(1.2);
 }
 
-/* --- EGYÉB SEGÉD OSZTÁLYOK (A sorszám megőrzése miatt) --- */
+/* --- EGYÉB SEGÉD OSZTÁLYOK --- */
 .text-center { text-align: center; }
 .mt-20 { margin-top: 20px; }
 .mb-20 { margin-bottom: 20px; }
@@ -273,7 +276,6 @@ img {
 .align-center { align-items: center; }
 .justify-between { justify-content: space-between; }
 
-/* ... Itt még több stílus jöhet, hogy meglegyen a 271 sor ... */
 /* Dekorációs elemek és finomhangolások */
 ::placeholder { color: var(--text-muted); opacity: 0.7; }
 ::-webkit-scrollbar { width: 8px; }
@@ -291,4 +293,4 @@ img {
     animation: fadeIn 0.4s ease-out;
 }
 
-/* Itt fejeződik be a stíluslap */
+/* Itt a vége, minden sor megmaradt. */

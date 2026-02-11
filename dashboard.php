@@ -147,8 +147,9 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Kalória Center</title>
     <link rel="stylesheet" href="style.css">
+    <script src="theme-handler.js"></script>
     <style>
         /* SÖTÉT TÉMA STÍLUSOK */
         body.dark-mode {

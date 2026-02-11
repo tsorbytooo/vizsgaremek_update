@@ -27,6 +27,7 @@ if (isset($_POST['send_ticket'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Support & Feedback</title>
     <link rel="stylesheet" href="style.css">
+    <script src="theme-handler.js"></script>
 </head>
 <body style="background-color: #f4f7f6;">
 

@@ -33,6 +33,7 @@ $u_data = mysqli_fetch_assoc($u_res);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalória Center Premium - Szintet léphetsz</title>
     <link rel="stylesheet" href="style.css">
+    <script src="theme-handler.js"></script>
 </head>
 <body>
 
@@ -43,7 +44,7 @@ $u_data = mysqli_fetch_assoc($u_res);
     </div>
 
     <?php if($u_data['premium'] == 1): ?>
-        <div style="background: #f0fdf4; border: 1px solid #10b981; padding: 20px; border-radius: 12px; text-align: center;">
+        <div style="border: 1px solid #10b981; padding: 20px; border-radius: 12px; text-align: center;">
             <h3 style="color: #10b981; margin: 0;">Már Premium tag vagy!</h3>
             <p style="margin-bottom: 20px;">Élvezd a korlátlan lehetőségeket.</p>
             

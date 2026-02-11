@@ -33,6 +33,7 @@ $u = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id=$user_
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Szerkesztése</title>
     <link rel="stylesheet" href="style.css">
+    <script src="theme-handler.js"></script>
 </head>
 <body>
     <div class="card" style="max-width: 500px; margin: 50px auto;">

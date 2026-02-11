@@ -1,4 +1,11 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'PHPMailer/Exception.php';
+require 'PHPMailer/PHPMailer.php';
+require 'PHPMailer/SMTP.php';
+
 session_start();
 require 'database_connect.php';
 
@@ -61,8 +68,9 @@ if (isset($_POST['complete_payment'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biztonságos Fizetés | Kalória Center</title>
     <link rel="stylesheet" href="style.css">
+    <script src="theme-handler.js"></script>
     <style>
-        .checkout-card { max-width: 550px; margin: 40px auto; padding: 30px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .checkout-card { max-width: 550px; margin: 40px auto; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .success-box { text-align: center; padding: 20px; }
         .input-group { margin-bottom: 15px; }
         .input-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
@@ -73,7 +81,7 @@ if (isset($_POST['complete_payment'])) {
 
 <?php if (!$show_success): ?>
     <div class="checkout-card">
-        <h2 style="text-align: center; color: #2b2d42;">💳 Biztonságos Fizetés</h2>
+        <h2 style="text-align: center; color: #f4f7f6;">💳 Biztonságos Fizetés</h2>
         
         <?php if(isset($error_msg)) echo "<p style='color:red;'>$error_msg</p>"; ?>
 
@@ -110,7 +118,7 @@ if (isset($_POST['complete_payment'])) {
                 </div>
             </div>
 
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0;">
+            <div style="background: #4361ee; padding: 15px; border-radius: 8px; margin: 20px 0;">
                 <div style="display: flex; justify-content: space-between;">
                     <span>Fizetendő összeg:</span>
                     <strong>4 990 Ft</strong>
@@ -121,7 +129,7 @@ if (isset($_POST['complete_payment'])) {
                 Fizetés Bejezése
             </button>
             
-            <a href="premium.php" style="display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none; font-size: 0.9rem;">Mégse</a>
+            <a href="premium.php" style="display: block; text-align: center; margin-top: 15px; color: #f4f7f6;; text-decoration: none; font-size: 0.9rem;">Mégse</a>
         </form>
     </div>
 

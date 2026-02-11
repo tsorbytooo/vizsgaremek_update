@@ -20,6 +20,7 @@ if ($user_id) {
     <meta charset="UTF-8">
     <title>Segítség & GYIK - Kalória Center</title>
     <link rel="stylesheet" href="style.css">
+    <script src="theme-handler.js"></script>
     <style>
         body { transition: background 0.3s; padding-bottom: 60px; }
         body.dark-mode { background-color: #0f172a !important; color: #f8fafc !important; }

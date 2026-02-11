@@ -29,6 +29,7 @@ if (isset($_GET['delete_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Support Panel</title>
     <link rel="stylesheet" href="style.css">
+    <script src="theme-handler.js"></script>
     <style>
         .badge { padding: 4px 8px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; }
         .bg-bug { background: #fee2e2; color: #dc2626; }
