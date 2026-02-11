@@ -211,6 +211,10 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                     <a href="profile.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">👤 Profil szerkesztése</a>
                     <a href="premium.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">⭐ Prémium tagság</a>
                     <a href="logout.php" style="color: #e71d36; padding: 14px 20px; text-decoration: none; display: block; font-weight: bold;">🚪 Kijelentkezés</a>
+                    <a href="support.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">📧 Support & Feedback</a>
+                    <?php if ($user_id == 9): ?>
+                        <a href="admin.php" style="color: #000000 !important; padding: 14px 20px; text-decoration: none; display: block; font-weight: bold; background-color: #ffca28 !important; border-bottom: 1px solid #e0a800; text-align: center;">🛠️ ADMIN PANEL</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
