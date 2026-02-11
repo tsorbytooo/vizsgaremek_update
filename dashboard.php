@@ -69,11 +69,39 @@ if ($u_data['weight'] > 0 && $u_data['height'] > 0) {
     else $status = "Elhízott";
 }
 
-// --- ÉTEL HOZZÁADÁSA ---
+// --- ÚJ KOMBINÁLT HOZZÁADÁS (GRAMM + DARAB) ---
+if (isset($_POST['add_combined_to_log'])) {
+    $food_id = (int)$_POST['food_id'];
+    $extra_grams = (float)$_POST['quantity'];
+    $pieces = (float)$_POST['pieces'];
+    
+    // Alapértelmezett darab súly (ezt akár az adatbázisból is vehetnéd)
+    $piece_weight = 150; 
+    
+    // Összesített mennyiség: (darab * súly) + extra grammok
+    $total_qty = ($pieces * $piece_weight) + $extra_grams;
+
+    if ($total_qty > 0) {
+        $ins = "INSERT INTO user_food_log (user_id, food_id, quantity, log_date) VALUES ($user_id, $food_id, $total_qty, '$today')";
+        mysqli_query($conn, $ins);
+    }
+    header("Location: dashboard.php"); exit();
+}
+
+// --- RÉGI METÓDUSOK MEGTARTÁSA (NEHOGY HIBA LEGYEN) ---
 if (isset($_POST['add_to_log'])) {
     $food_id = (int)$_POST['food_id'];
     $qty = (float)$_POST['quantity'];
     $ins = "INSERT INTO user_food_log (user_id, food_id, quantity, log_date) VALUES ($user_id, $food_id, $qty, '$today')";
+    mysqli_query($conn, $ins);
+    header("Location: dashboard.php"); exit();
+}
+if (isset($_POST['add_piece_to_log'])) {
+    $food_id = (int)$_POST['food_id'];
+    $pieces = (float)$_POST['pieces'];
+    $piece_weight = 150; 
+    $total_qty = $pieces * $piece_weight;
+    $ins = "INSERT INTO user_food_log (user_id, food_id, quantity, log_date) VALUES ($user_id, $food_id, $total_qty, '$today')";
     mysqli_query($conn, $ins);
     header("Location: dashboard.php"); exit();
 }
@@ -94,7 +122,7 @@ if (!empty($_GET['q'])) {
     while($row = mysqli_fetch_assoc($s_res)) $search_results[] = $row;
 }
 
-// --- MAI ÖSSZESÍTÉS (BŐVÍTETT: MAKRÓKKAL) ---
+// --- MAI ÖSSZESÍTÉS ---
 $sum_sql = "SELECT 
                 SUM((f.calories_100g/100)*l.quantity) as total_cal,
                 SUM((f.protein_100g/100)*l.quantity) as total_protein,
@@ -106,7 +134,6 @@ $sum_sql = "SELECT
 $sum_res = mysqli_query($conn, $sum_sql);
 $daily_data = mysqli_fetch_assoc($sum_res);
 
-// Értékek kinyerése (ha nincs adat, akkor 0)
 $current_cal = $daily_data['total_cal'] ?? 0;
 $current_protein = $daily_data['total_protein'] ?? 0;
 $current_carbs = $daily_data['total_carbs'] ?? 0;
@@ -160,7 +187,6 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             background-color: #0f172a !important;
             color: #f8fafc !important;
         }
-        /* Sötét mód makró kártya javítás */
         body.dark-mode .premium-blur-box {
             background-color: #334155 !important;
             border-color: #475569 !important;
@@ -172,22 +198,64 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             color: #f8fafc !important;
         }
 
-        /* --- PROGRESS BAR MAGASÍTÁS --- */
         .progress-container {
-            height: 30px !important; /* Fix magasság */
+            height: 30px !important;
             background-color: #e2e8f0;
             border-radius: 15px;
             overflow: hidden;
             margin-top: 15px;
         }
         .progress-bar {
-            height: 30px !important; /* Fix magasság */
-            line-height: 30px !important; /* Szöveg középre */
+            height: 30px !important;
+            line-height: 30px !important;
             font-size: 15px !important;
             font-weight: bold;
             color: white;
             text-align: center;
             display: block; 
+        }
+
+        .uniform-btn {
+            width: auto !important; 
+            padding: 0 20px;
+            height: 40px !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: white;
+            white-space: nowrap;
+        }
+
+        /* EGY SORBA RENDEZÉS CSS */
+        .combined-log-form {
+            display: flex;
+            flex-direction: row; /* Kifejezetten egy sorba kényszerítjük */
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .log-input-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .log-input-group input {
+            width: 60px !important;
+            padding: 8px !important;
+            border-radius: 8px !important;
+            border: 1px solid #ddd !important;
+            text-align: center;
+        }
+
+        .search-results-table td {
+            padding: 15px 0;
         }
     </style>
 </head>
@@ -212,6 +280,8 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                     <a href="premium.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">⭐ Prémium tagság</a>
                     <a href="logout.php" style="color: #e71d36; padding: 14px 20px; text-decoration: none; display: block; font-weight: bold;">🚪 Kijelentkezés</a>
                     <a href="support.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">📧 Support & Feedback</a>
+                    <a href="about.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">ℹ️ Rólunk</a>
+                    <a href="help.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">❓ Segítség / GYIK</a>
                     <?php if ($user_id == 9): ?>
                         <a href="admin.php" style="color: #000000 !important; padding: 14px 20px; text-decoration: none; display: block; font-weight: bold; background-color: #ffca28 !important; border-bottom: 1px solid #e0a800; text-align: center;">🛠️ ADMIN PANEL</a>
                     <?php endif; ?>
@@ -346,12 +416,12 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             <?php endif; ?>
 
             <?php if(!empty($search_results)): ?>
-                <table>
+                <table class="search-results-table" style="width: 100%; border-collapse: collapse;">
                     <?php foreach($search_results as $f): 
                         $is_fav = in_array($f['id'], $fav_ids);
                     ?>
                     <tr>
-                        <td>
+                        <td style="vertical-align: middle;">
                             <div style="display: flex; align-items: center; gap: 12px;">
                                 <a href="dashboard.php?toggle_favorite=<?php echo $f['id']; ?>" style="text-decoration: none; font-size: 20px; color: <?php echo $is_fav ? '#ff9f1c' : '#ccc'; ?>;">
                                     <?php echo $is_fav ? '★' : '☆'; ?>
@@ -359,17 +429,27 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                                 <?php if($f['image']): ?>
                                     <img src="uploads/<?php echo $f['image']; ?>" style="width: 40px; height: 40px; border-radius: 5px; object-fit: cover;">
                                 <?php endif; ?>
-                                <div>
-                                    <strong><?php echo $f['name']; ?></strong><br>
+                                <div style="display: flex; flex-direction: column; justify-content: center;">
+                                    <strong><?php echo $f['name']; ?></strong>
                                     <small><?php echo $f['calories_100g']; ?> kcal / 100g</small>
                                 </div>
                             </div>
                         </td>
-                        <td style="text-align: right;">
-                            <form method="POST" style="display: flex; gap: 5px; justify-content: flex-end;">
+                        <td style="text-align: right; vertical-align: middle;">
+                            <form method="POST" class="combined-log-form">
                                 <input type="hidden" name="food_id" value="<?php echo $f['id']; ?>">
-                                <input type="number" name="quantity" value="100" style="width: 80px; padding: 6px; border-radius: 8px; border: 1px solid #ddd;">
-                                <button type="submit" name="add_to_log" class="btn-success">+</button>
+                                
+                                <div class="log-input-group">
+                                    <span style="font-size: 12px; color: gray;">+ gramm:</span>
+                                    <input type="number" name="quantity" value="0" title="Gramm">
+                                </div>
+                                
+                                <div class="log-input-group">
+                                    <span style="font-size: 12px; color: gray;">darab:</span>
+                                    <input type="number" name="pieces" value="1" step="0.5" title="Darab">
+                                </div>
+
+                                <button type="submit" name="add_combined_to_log" class="uniform-btn" style="background-color: #4361ee;">Hozzáadás</button>
                             </form>
                         </td>
                     </tr>
