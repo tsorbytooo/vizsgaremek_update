@@ -433,6 +433,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                         <a href="dashboard.php?delete_id=<?php echo $l['id']; ?>" class="delete-btn" onclick="return confirm('Biztosan törlöd?')">Törlés</a>
                     </td>
                 </tr>
+                
                 <?php endwhile; ?>
             </tbody>
         </table>
