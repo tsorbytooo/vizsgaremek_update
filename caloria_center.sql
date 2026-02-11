@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2026. Feb 04. 15:24
+-- Létrehozás ideje: 2026. Feb 11. 10:55
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -105,7 +105,62 @@ INSERT INTO `foods` (`id`, `name`, `calories_100g`, `protein_100g`, `carbs_100g`
 (35, 'Coco Délicieuse et Tropicale', 20.00, 0.10, NULL, NULL, NULL, NULL, NULL, 'g', 'local', '2026-01-28 13:31:23', NULL, NULL),
 (36, 'Alpro Not Milk', 59.00, 0.70, NULL, NULL, NULL, NULL, NULL, 'g', 'local', '2026-01-28 13:31:23', NULL, NULL),
 (37, 'Tripla Cheesy', 257.00, 16.00, 13.00, 15.00, NULL, NULL, NULL, 'g', '', '2026-01-30 11:32:22', NULL, NULL),
-(38, 'muzli', 265.00, NULL, NULL, NULL, NULL, NULL, NULL, 'g', 'local', '2026-02-04 13:16:39', '1770210999_ronaldo.gif', 6);
+(38, 'muzli', 265.00, NULL, NULL, NULL, NULL, NULL, NULL, 'g', 'local', '2026-02-04 13:16:39', '1770210999_ronaldo.gif', 6),
+(39, 'husi', 67.00, NULL, NULL, NULL, NULL, NULL, NULL, 'g', 'local', '2026-02-06 11:36:25', '1770377785_fugelaci.jpg', 8),
+(41, 'siu', 67.00, NULL, NULL, NULL, NULL, NULL, NULL, 'g', 'local', '2026-02-06 11:44:46', '1770378286_ronaldo.jpg', 8),
+(42, 'Garnélarák (főtt)', 99.00, 24.00, 0.20, 0.30, 0.00, 0.00, 1.100, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(43, 'Tőkehal filé', 82.00, 18.00, 0.00, 0.70, 0.00, 0.00, 0.130, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(44, 'Hekk filé', 89.00, 17.20, 0.00, 2.20, 0.00, 0.00, 0.150, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(45, 'Padlizsán', 25.00, 1.00, 6.00, 0.20, 3.00, 3.50, 0.002, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(46, 'Sütőtök', 26.00, 1.00, 6.50, 0.10, 0.50, 2.80, 0.001, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(47, 'Kelbimbó', 43.00, 3.40, 9.00, 0.30, 3.80, 2.20, 0.025, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(48, 'Spárga', 20.00, 2.20, 3.90, 0.10, 2.10, 1.90, 0.002, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(49, 'Zellergumó', 42.00, 1.50, 9.00, 0.30, 1.80, 1.80, 0.100, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(50, 'Retek', 16.00, 0.70, 3.40, 0.10, 1.60, 1.90, 0.039, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(51, 'Kínai kel', 13.00, 1.50, 2.20, 0.20, 1.00, 1.20, 0.065, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(52, 'Málna', 52.00, 1.20, 11.90, 0.60, 6.50, 4.40, 0.001, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(53, 'Eper', 32.00, 0.70, 7.70, 0.30, 2.00, 4.90, 0.001, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(54, 'Ananász', 50.00, 0.50, 13.10, 0.10, 1.40, 9.80, 0.001, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(55, 'Kivi', 61.00, 1.10, 15.00, 0.50, 3.00, 9.00, 0.003, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(56, 'Sárgadinnye', 34.00, 0.80, 8.20, 0.20, 0.90, 7.90, 0.010, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(57, 'Vörösbab (konzerv)', 127.00, 8.70, 22.80, 0.50, 7.40, 0.30, 0.300, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(58, 'Zöldborsó', 81.00, 5.40, 14.50, 0.40, 5.10, 5.70, 0.005, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(59, 'Tökmag (natúr)', 559.00, 30.00, 10.70, 49.00, 6.00, 1.40, 0.018, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(60, 'Szezámmag', 573.00, 17.70, 23.40, 49.70, 11.80, 0.30, 0.011, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(61, 'Tojásfehérje', 52.00, 11.00, 0.70, 0.20, 0.00, 0.70, 0.160, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(62, 'Tofu', 76.00, 8.00, 1.90, 4.80, 0.30, 0.70, 0.007, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(63, 'Hajdina (főtt)', 92.00, 3.40, 20.00, 0.60, 2.70, 0.00, 0.001, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(64, 'Bulgur (főtt)', 83.00, 3.00, 18.60, 0.20, 4.50, 0.10, 0.005, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(65, 'Csirkemáj (sült)', 167.00, 24.50, 0.90, 6.50, 0.00, 0.00, 0.200, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(66, 'Cottage Cheese (light)', 80.00, 12.00, 3.00, 2.00, 0.00, 3.00, 0.700, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(67, 'Kefir', 43.00, 3.50, 4.80, 1.00, 0.00, 4.80, 0.110, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(68, 'Hummusz', 166.00, 7.90, 14.30, 9.60, 6.00, 0.30, 0.950, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(69, 'Gomba (csiperke)', 22.00, 3.10, 3.30, 0.30, 1.00, 2.00, 0.005, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(70, 'Paradicsom', 18.00, 0.90, 3.90, 0.20, 1.20, 2.60, 0.005, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(71, 'Paprika (TV)', 20.00, 1.00, 3.00, 0.30, 1.20, 2.40, 0.002, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `support_tickets`
+--
+
+CREATE TABLE `support_tickets` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `category` enum('Support','Feedback','Bug') DEFAULT 'Support',
+  `status` enum('Open','Closed') DEFAULT 'Open',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- A tábla adatainak kiíratása `support_tickets`
+--
+
+INSERT INTO `support_tickets` (`id`, `user_id`, `subject`, `message`, `category`, `status`, `created_at`) VALUES
+(1, 8, 'nem mukodik halo', 'valami nem jo', 'Support', 'Closed', '2026-02-11 08:56:47');
 
 -- --------------------------------------------------------
 
@@ -135,7 +190,9 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `premium`, `height`, `we
 (3, 'nigger', 'nyomorekvagyok@gmail.com', 'csorba', 0, NULL, NULL, NULL, NULL),
 (4, 'nigger', 'nyomorekvagyok@gmail.com', 'csorba', 0, NULL, NULL, NULL, NULL),
 (6, 'Schnepp Ádám', 'adam@gmail.com', '$2y$10$xwfF0Fdt4mRSH8xZS3vuu.FhdGnRfVhDTa496douxc4lQcQ77qSLG', 1, 170, 95, 19, 'male'),
-(7, 'Szőke Császár Bálint', 'szokebalintdeazeredeti@gmail.com', '$2y$10$smFWpselm2qSQ.3lJqj6lODwutnZnscaOQq1cnEUjDoKkDfBoVPe.', 0, 120, 140, 12, 'female');
+(7, 'Szőke Császár Bálint', 'szokebalintdeazeredeti@gmail.com', '$2y$10$smFWpselm2qSQ.3lJqj6lODwutnZnscaOQq1cnEUjDoKkDfBoVPe.', 0, 120, 140, 12, 'female'),
+(8, 'nigger', 'nigger@gmail.com', '$2y$10$mxUtxDgmsP2eSH28zszhseoqXhcph6qyphWld3czU5AgvGIWC4Jd6', 1, 200, 67, 35, 'male'),
+(9, 'csorba', 'admin@gmail.com', '$2y$10$pkOxgkEza6da7Gk6TW4vDemHqVeeSiiE3yIAGMIZklnrZ0fD5e/da', 0, 180, 75, 20, 'male');
 
 -- --------------------------------------------------------
 
@@ -168,7 +225,8 @@ INSERT INTO `user_food_log` (`id`, `user_id`, `food_id`, `quantity`, `log_date`,
 (12, 7, 37, 263.00, '2026-01-30', '2026-01-30 12:17:55'),
 (13, 6, 37, 263.00, '2026-01-30', '2026-01-30 13:51:36'),
 (14, 6, 37, 263.00, '2026-02-04', '2026-02-04 09:04:59'),
-(15, 6, 38, 89.00, '2026-02-04', '2026-02-04 13:16:39');
+(15, 6, 38, 89.00, '2026-02-04', '2026-02-04 13:16:39'),
+(21, 8, 20, 100.00, '2026-02-11', '2026-02-11 08:34:58');
 
 --
 -- Indexek a kiírt táblákhoz
@@ -185,6 +243,12 @@ ALTER TABLE `favorites`
 -- A tábla indexei `foods`
 --
 ALTER TABLE `foods`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- A tábla indexei `support_tickets`
+--
+ALTER TABLE `support_tickets`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -215,19 +279,25 @@ ALTER TABLE `favorites`
 -- AUTO_INCREMENT a táblához `foods`
 --
 ALTER TABLE `foods`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+
+--
+-- AUTO_INCREMENT a táblához `support_tickets`
+--
+ALTER TABLE `support_tickets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT a táblához `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT a táblához `user_food_log`
 --
 ALTER TABLE `user_food_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Megkötések a kiírt táblákhoz
