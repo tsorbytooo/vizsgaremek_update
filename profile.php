@@ -30,6 +30,7 @@ $u = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id=$user_
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Szerkesztése</title>
     <link rel="stylesheet" href="style.css">
 </head>
