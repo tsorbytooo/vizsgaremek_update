@@ -12,6 +12,15 @@ $u_sql = "SELECT * FROM users WHERE id = $user_id";
 $u_res = mysqli_query($conn, $u_sql);
 $u_data = mysqli_fetch_assoc($u_res);
 
+// --- FEEDBACK RENDSZER MENTÉSE (ÚJ) ---
+if (isset($_POST['send_feedback'])) {
+    $rating = (int)$_POST['rating'];
+    $comment = mysqli_real_escape_string($conn, $_POST['feedback_text']);
+    // Feltételezzük, hogy van egy feedbacks táblád (id, user_id, rating, comment, created_at)
+    mysqli_query($conn, "INSERT INTO feedbacks (user_id, rating, comment) VALUES ($user_id, $rating, '$comment')");
+    $feedback_success = true;
+}
+
 // --- VÍZ RENDSZER LOGIKA (ÚJ) ---
 if (isset($_POST['add_water'])) {
     $amount = (float)$_POST['water_amount'];
@@ -215,11 +224,11 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalória Center</title>
+    <title>Kalória Center - Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <script src="theme-handler.js"></script>
     <style>
-        /* SÖTÉT TÉMA STÍLUSOK */
+        /* --- SÖTÉT TÉMA SZABÁLYOK (MINDEN ELEMRE) --- */
         body.dark-mode {
             background-color: #0f172a !important;
             color: #f8fafc !important;
@@ -229,7 +238,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             border-color: #334155 !important;
             color: #f8fafc !important;
         }
-        body.dark-mode input {
+        body.dark-mode input, body.dark-mode textarea {
             background-color: #0f172a !important;
             color: #f8fafc !important;
             border-color: #334155 !important;
@@ -268,6 +277,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             color: #f8fafc !important;
         }
 
+        /* --- PROGRESS BAR ÉS EGYÉB LAYOUT STÍLUSOK --- */
         .progress-container {
             height: 30px !important;
             background-color: #e2e8f0;
@@ -283,6 +293,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             color: white;
             text-align: center;
             display: block; 
+            transition: width 0.5s ease;
         }
 
         .uniform-btn {
@@ -300,7 +311,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             white-space: nowrap;
         }
 
-        /* EGY SORBA RENDEZÉS CSS */
+        /* EGY SORBA RENDEZÉS FORMOKHOZ */
         .combined-log-form {
             display: flex;
             flex-direction: row; 
@@ -328,7 +339,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             padding: 15px 0;
         }
 
-        /* VÍZ RENDSZER EXTRA STÍLUS */
+        /* VÍZ RENDSZER KÁRTYA STÍLUSA */
         .water-card {
             background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
             border: 1px solid #7dd3fc;
@@ -358,6 +369,27 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             transition: transform 0.1s;
         }
         .w-btn:active { transform: scale(0.95); }
+
+        /* --- STAR RATING STÍLUS (FEEDBACK) --- */
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            gap: 5px;
+            margin: 15px 0;
+        }
+        .star-rating input { display: none; }
+        .star-rating label {
+            font-size: 30px;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .star-rating input:checked ~ label,
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffca28;
+        }
     </style>
 </head>
 <body>
@@ -378,12 +410,13 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                 
                 <div id="menuContent" style="display: none; position: absolute; right: 0; top: 55px; background-color: white; min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-radius: 12px; z-index: 99999; border: 1px solid #edf2f7; overflow: hidden;">
                     <a href="profile.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">👤 Profil szerkesztése</a>
+                    <a href="log.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">📅 Étkezési Napló (30 nap)</a>
                     <a href="premium.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">⭐ Prémium tagság</a>
                     <a href="my_recipes.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">📖 Saját Recepttáram</a>
-                    <a href="logout.php" style="color: #e71d36; padding: 14px 20px; text-decoration: none; display: block; font-weight: bold;">🚪 Kijelentkezés</a>
                     <a href="support.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">📧 Support & Feedback</a>
                     <a href="about.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">ℹ️ Rólunk</a>
                     <a href="help.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">❓ Segítség / GYIK</a>
+                    <a href="logout.php" style="color: #e71d36; padding: 14px 20px; text-decoration: none; display: block; font-weight: bold; border-top: 1px solid #f8f9fd;">🚪 Kijelentkezés</a>
                     <?php if ($user_id == 9): ?>
                         <a href="admin.php" style="color: #000000 !important; padding: 14px 20px; text-decoration: none; display: block; font-weight: bold; background-color: #ffca28 !important; border-bottom: 1px solid #e0a800; text-align: center;">🛠️ ADMIN PANEL</a>
                     <?php endif; ?>
@@ -398,6 +431,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
         const themeBtn = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
 
+        // Téma betöltése LocalStorage-ből
         if (localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-mode');
             themeIcon.innerText = '☀️';
@@ -405,6 +439,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             themeBtn.style.borderColor = '#334155';
         }
 
+        // Téma váltás kezelése
         themeBtn.addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
@@ -420,11 +455,14 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             }
         });
 
+        // Menü megnyitása
         btn.addEventListener('mousedown', function(e) {
             e.preventDefault();
-            if (box.style.display === "block") { box.style.display = "none"; } else { box.style.display = "block"; box.offsetHeight; }
+            if (box.style.display === "block") { box.style.display = "none"; } else { box.style.display = "block"; }
             e.stopPropagation();
         });
+
+        // Kattintás a menün kívül bezárja azt
         document.addEventListener('mousedown', function(e) {
             if (e.target !== btn && !box.contains(e.target)) { box.style.display = "none"; }
         });
@@ -454,7 +492,6 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
 
                 <?php if ($u_data['premium'] == 1): ?>
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; text-align: center;">
-                        
                         <div>
                             <small style="color: #4361ee; font-weight: bold;">Fehérje</small>
                             <div style="background: #e0e7ff; height: 8px; border-radius: 4px; margin: 5px 0; overflow: hidden;">
@@ -462,7 +499,6 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                             </div>
                             <small><?php echo round($current_protein); ?>g</small>
                         </div>
-
                         <div>
                             <small style="color: #f72585; font-weight: bold;">Szénhidrát</small>
                             <div style="background: #ffe0f0; height: 8px; border-radius: 4px; margin: 5px 0; overflow: hidden;">
@@ -470,7 +506,6 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                             </div>
                             <small><?php echo round($current_carbs); ?>g</small>
                         </div>
-
                         <div>
                             <small style="color: #f8961e; font-weight: bold;">Zsír</small>
                             <div style="background: #fff5cc; height: 8px; border-radius: 4px; margin: 5px 0; overflow: hidden;">
@@ -479,7 +514,6 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                             <small><?php echo round($current_fat); ?>g</small>
                         </div>
                     </div>
-
                 <?php else: ?>
                     <div class="premium-blur-box" style="position: relative; overflow: hidden; border-radius: 10px; background: #f8f9fa; border: 1px dashed #ccc; padding: 20px; text-align: center;">
                         <div style="filter: blur(4px); opacity: 0.5; user-select: none;">
@@ -492,7 +526,14 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                     </div>
                 <?php endif; ?>
             </div>
-            </section>
+            
+            <div style="margin-top: 30px; text-align: center; padding-top: 20px; border-top: 1px dashed var(--border-color);">
+                <a href="log.php" class="btn-primary" style="text-decoration: none; display: block; background-color: #22c55e;">
+                    📅 Étkezési napló megnyitása
+                </a>
+                <small style="color: var(--text-muted); display: block; margin-top: 10px;">Visszamenőleges adatok megtekintése</small>
+            </div>
+        </section>
 
         <section class="card-section">
             <h3>Mit ettél ma?</h3>
@@ -653,6 +694,39 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             </tbody>
         </table>
     </section>
+
+    <section class="card-section text-center" style="margin-top: 40px; border: 2px solid var(--primary);">
+        <h3>Milyen volt a mai napod? 🌟</h3>
+        <p style="color: var(--text-muted);">Segíts nekünk fejlődni! Értékeld az alkalmazást egy rövid véleménnyel.</p>
+        
+        <?php if (isset($feedback_success)): ?>
+            <div style="background-color: #dcfce7; color: #166534; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                Köszönjük az értékelést! A véleményed sokat számít nekünk.
+            </div>
+        <?php else: ?>
+            <form method="POST">
+                <div class="star-rating">
+                    <input type="radio" id="star5" name="rating" value="5" required/><label for="star5" title="Kiváló">★</label>
+                    <input type="radio" id="star4" name="rating" value="4"/><label for="star4" title="Nagyon jó">★</label>
+                    <input type="radio" id="star3" name="rating" value="3"/><label for="star3" title="Átlagos">★</label>
+                    <input type="radio" id="star2" name="rating" value="2"/><label for="star2" title="Gyenge">★</label>
+                    <input type="radio" id="star1" name="rating" value="1"/><label for="star1" title="Rossz">★</label>
+                </div>
+                
+                <textarea name="feedback_text" placeholder="Írd le tapasztalataidat..." style="width: 100%; min-height: 80px; padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); font-family: inherit; margin-bottom: 15px;"></textarea>
+                
+                <button type="submit" name="send_feedback" class="btn-primary" style="width: auto; padding: 12px 40px;">Vélemény elküldése</button>
+            </form>
+        <?php endif; ?>
+    </section>
+
+    <footer style="text-align: center; padding: 40px 0; color: var(--text-muted); font-size: 0.85rem;">
+        <p>&copy; <?php echo date('Y'); ?> Kalória Center - Minden jog fenntartva.</p>
+        <div style="margin-top: 10px; display: flex; justify-content: center; gap: 20px;">
+            <a href="terms.php" style="color: var(--text-muted); text-decoration: none;">ÁSZF</a>
+            <a href="privacy.php" style="color: var(--text-muted); text-decoration: none;">Adatvédelem</a>
+        </div>
+    </footer>
 </div>
 </body>
 </html>
