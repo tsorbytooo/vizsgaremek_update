@@ -12,6 +12,23 @@ $u_sql = "SELECT * FROM users WHERE id = $user_id";
 $u_res = mysqli_query($conn, $u_sql);
 $u_data = mysqli_fetch_assoc($u_res);
 
+// --- VÍZ RENDSZER LOGIKA (ÚJ) ---
+if (isset($_POST['add_water'])) {
+    $amount = (float)$_POST['water_amount'];
+    mysqli_query($conn, "INSERT INTO water_log (user_id, amount, log_date) VALUES ($user_id, $amount, '$today')");
+    header("Location: dashboard.php"); exit();
+}
+
+if (isset($_POST['reset_water'])) {
+    mysqli_query($conn, "DELETE FROM water_log WHERE user_id = $user_id AND log_date = '$today'");
+    header("Location: dashboard.php"); exit();
+}
+
+// Aktuális vízállás lekérése
+$water_query = mysqli_query($conn, "SELECT SUM(amount) as total FROM water_log WHERE user_id = $user_id AND log_date = '$today'");
+$water_row = mysqli_fetch_assoc($water_query);
+$current_water = (float)($water_row['total'] ?? 0);
+
 // --- KEDVENCNEK JELÖLÉS LOGIKA ---
 if (isset($_GET['toggle_favorite'])) {
     $f_id = (int)$_GET['toggle_favorite'];
@@ -44,6 +61,24 @@ if (isset($_POST['add_custom_food'])) {
     header("Location: dashboard.php"); exit();
 }
 
+// --- API ÉTEL MENTÉSE ÉS NAPLÓZÁSA ---
+if (isset($_POST['add_api_food'])) {
+    $name = mysqli_real_escape_string($conn, $_POST['api_name']);
+    $cal = (float)$_POST['api_cal'];
+    $prot = (float)$_POST['api_prot'] ?? 0;
+    $carb = (float)$_POST['api_carb'] ?? 0;
+    $fat = (float)$_POST['api_fat'] ?? 0;
+    $qty = (float)$_POST['quantity'];
+
+    $ins_f = "INSERT INTO foods (name, calories_100g, protein_100g, carbs_100g, fat_100g, created_by) 
+              VALUES ('$name', $cal, $prot, $carb, $fat, $user_id)";
+    if (mysqli_query($conn, $ins_f)) {
+        $new_id = mysqli_insert_id($conn);
+        mysqli_query($conn, "INSERT INTO user_food_log (user_id, food_id, quantity, log_date) VALUES ($user_id, $new_id, $qty, '$today')");
+    }
+    header("Location: dashboard.php"); exit();
+}
+
 // Kedvenc ID-k lekérése a színezéshez
 $fav_ids = [];
 $fav_res = mysqli_query($conn, "SELECT food_id FROM favorites WHERE user_id = $user_id");
@@ -69,16 +104,14 @@ if ($u_data['weight'] > 0 && $u_data['height'] > 0) {
     else $status = "Elhízott";
 }
 
+$water_percent = ($water > 0) ? ($current_water / $water) * 100 : 0;
+
 // --- ÚJ KOMBINÁLT HOZZÁADÁS (GRAMM + DARAB) ---
 if (isset($_POST['add_combined_to_log'])) {
     $food_id = (int)$_POST['food_id'];
     $extra_grams = (float)$_POST['quantity'];
     $pieces = (float)$_POST['pieces'];
-    
-    // Alapértelmezett darab súly (ezt akár az adatbázisból is vehetnéd)
     $piece_weight = 150; 
-    
-    // Összesített mennyiség: (darab * súly) + extra grammok
     $total_qty = ($pieces * $piece_weight) + $extra_grams;
 
     if ($total_qty > 0) {
@@ -88,7 +121,7 @@ if (isset($_POST['add_combined_to_log'])) {
     header("Location: dashboard.php"); exit();
 }
 
-// --- RÉGI METÓDUSOK MEGTARTÁSA (NEHOGY HIBA LEGYEN) ---
+// --- RÉGI METÓDUSOK MEGTARTÁSA ---
 if (isset($_POST['add_to_log'])) {
     $food_id = (int)$_POST['food_id'];
     $qty = (float)$_POST['quantity'];
@@ -113,13 +146,48 @@ if (isset($_GET['delete_id'])) {
     header("Location: dashboard.php"); exit();
 }
 
-// --- KERESÉS ---
+// --- KERESÉS (HELYI + API) ---
 $search_results = [];
 if (!empty($_GET['q'])) {
     $q = mysqli_real_escape_string($conn, $_GET['q']);
+    
+    // 1. Helyi adatbázis
     $s_sql = "SELECT * FROM foods WHERE (name LIKE '%$q%' AND (created_by IS NULL OR created_by = $user_id)) LIMIT 5";
     $s_res = mysqli_query($conn, $s_sql);
-    while($row = mysqli_fetch_assoc($s_res)) $search_results[] = $row;
+    while($row = mysqli_fetch_assoc($s_res)) {
+        $row['is_api'] = false;
+        $search_results[] = $row;
+    }
+
+    // 2. Edamam API (Ha nincs elég találat helyben)
+    if (count($search_results) < 3) {
+        $app_id = "74bf4d72"; 
+        $app_key = "8f5d9917069f64762b9297d77890eda3";
+        
+        $translate = ["sajtburger" => "cheeseburger", "csirke" => "chicken", "alma" => "apple", "kenyér" => "bread"];
+        $api_q = isset($translate[strtolower($_GET['q'])]) ? $translate[strtolower($_GET['q'])] : $_GET['q'];
+
+        $url = "https://api.edamam.com/api/food-database/v2/parser?app_id=$app_id&app_key=$app_key&ingr=" . urlencode($api_q);
+        $response = @file_get_contents($url);
+        if ($response) {
+            $api_data = json_decode($response, true);
+            if (isset($api_data['hints'])) {
+                foreach (array_slice($api_data['hints'], 0, 5) as $item) {
+                    $f = $item['food'];
+                    $search_results[] = [
+                        'id' => $f['foodId'],
+                        'name' => "🌍 " . $f['label'],
+                        'calories_100g' => $f['nutrients']['ENERC_KCAL'] ?? 0,
+                        'protein_100g' => $f['nutrients']['PROCNT'] ?? 0,
+                        'carbs_100g' => $f['nutrients']['CHOCDF'] ?? 0,
+                        'fat_100g' => $f['nutrients']['FAT'] ?? 0,
+                        'image' => $f['image'] ?? null,
+                        'is_api' => true
+                    ];
+                }
+            }
+        }
+    }
 }
 
 // --- MAI ÖSSZESÍTÉS ---
@@ -235,7 +303,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
         /* EGY SORBA RENDEZÉS CSS */
         .combined-log-form {
             display: flex;
-            flex-direction: row; /* Kifejezetten egy sorba kényszerítjük */
+            flex-direction: row; 
             align-items: center;
             justify-content: flex-end;
             gap: 12px;
@@ -259,6 +327,37 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
         .search-results-table td {
             padding: 15px 0;
         }
+
+        /* VÍZ RENDSZER EXTRA STÍLUS */
+        .water-card {
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+            border: 1px solid #7dd3fc;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        body.dark-mode .water-card {
+            background: linear-gradient(135deg, #0c4a6e 0%, #075985 100%);
+            border-color: #0369a1;
+        }
+        .water-btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .w-btn {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.1s;
+        }
+        .w-btn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -280,6 +379,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                 <div id="menuContent" style="display: none; position: absolute; right: 0; top: 55px; background-color: white; min-width: 220px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-radius: 12px; z-index: 99999; border: 1px solid #edf2f7; overflow: hidden;">
                     <a href="profile.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">👤 Profil szerkesztése</a>
                     <a href="premium.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">⭐ Prémium tagság</a>
+                    <a href="my_recipes.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">📖 Saját Recepttáram</a>
                     <a href="logout.php" style="color: #e71d36; padding: 14px 20px; text-decoration: none; display: block; font-weight: bold;">🚪 Kijelentkezés</a>
                     <a href="support.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">📧 Support & Feedback</a>
                     <a href="about.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">ℹ️ Rólunk</a>
@@ -341,7 +441,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             </div>
             
             <div class="progress-container">
-                <div class="progress-bar" style="width: <?php echo min($percent, 100); ?>%; background-color: <?php echo $percent > 100 ? 'var(--danger)' : 'var(--success)'; ?>;">
+                <div class="progress-bar" style="width: <?php echo min($percent, 100); ?>%; background-color: <?php echo $percent > 100 ? '#ef4444' : '#10b981'; ?>;">
                     <?php echo round($percent); ?>%
                 </div>
             </div>
@@ -401,6 +501,24 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                 <button type="submit" class="btn-primary">Keresés</button>
             </form>
 
+            <div class="water-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h4 style="margin:0; color: #0369a1;">💧 Napi vízfogyasztás</h4>
+                    <span style="font-weight: bold; color: #0369a1;"><?php echo $current_water; ?> / <?php echo $water; ?> L</span>
+                </div>
+                <div class="progress-container" style="background: rgba(255,255,255,0.5);">
+                    <div class="progress-bar" style="width: <?php echo min($water_percent, 100); ?>%; background-color: #0ea5e9;">
+                        <?php echo round($water_percent); ?>%
+                    </div>
+                </div>
+                <div class="water-btn-group">
+                    <form method="POST"><input type="hidden" name="water_amount" value="0.25"><button type="submit" name="add_water" class="w-btn">+ 2.5dl</button></form>
+                    <form method="POST"><input type="hidden" name="water_amount" value="0.5"><button type="submit" name="add_water" class="w-btn">+ 5dl</button></form>
+                    <form method="POST"><input type="hidden" name="water_amount" value="1.0"><button type="submit" name="add_water" class="w-btn">+ 1L</button></form>
+                    <form method="POST" onsubmit="return confirm('Nullázod a mai vizet?')"><button type="submit" name="reset_water" class="w-btn" style="background:#64748b;">🔄</button></form>
+                </div>
+            </div>
+
             <?php
             $my_favs_sql = "SELECT f.* FROM foods f JOIN favorites fav ON f.id = fav.food_id WHERE fav.user_id = $user_id";
             $my_favs_res = mysqli_query($conn, $my_favs_sql);
@@ -420,16 +538,21 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
             <?php if(!empty($search_results)): ?>
                 <table class="search-results-table" style="width: 100%; border-collapse: collapse;">
                     <?php foreach($search_results as $f): 
-                        $is_fav = in_array($f['id'], $fav_ids);
+                        $is_fav = in_array($f['id'] ?? 0, $fav_ids);
                     ?>
                     <tr>
                         <td style="vertical-align: middle;">
                             <div style="display: flex; align-items: center; gap: 12px;">
+                                <?php if(!(isset($f['is_api']) && $f['is_api'])): ?>
                                 <a href="dashboard.php?toggle_favorite=<?php echo $f['id']; ?>" style="text-decoration: none; font-size: 20px; color: <?php echo $is_fav ? '#ff9f1c' : '#ccc'; ?>;">
                                     <?php echo $is_fav ? '★' : '☆'; ?>
                                 </a>
-                                <?php if($f['image']): ?>
-                                    <img src="uploads/<?php echo $f['image']; ?>" style="width: 40px; height: 40px; border-radius: 5px; object-fit: cover;">
+                                <?php else: ?>
+                                    <span style="font-size: 18px;">🌍</span>
+                                <?php endif; ?>
+
+                                <?php if(!empty($f['image'])): ?>
+                                    <img src="<?php echo (isset($f['is_api']) && $f['is_api']) ? $f['image'] : 'uploads/'.$f['image']; ?>" style="width: 40px; height: 40px; border-radius: 5px; object-fit: cover;">
                                 <?php endif; ?>
                                 <div style="display: flex; flex-direction: column; justify-content: center;">
                                     <strong><?php echo $f['name']; ?></strong>
@@ -438,21 +561,32 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                             </div>
                         </td>
                         <td style="text-align: right; vertical-align: middle;">
-                            <form method="POST" class="combined-log-form">
-                                <input type="hidden" name="food_id" value="<?php echo $f['id']; ?>">
-                                
-                                <div class="log-input-group">
-                                    <span style="font-size: 12px; color: gray;">+ gramm:</span>
-                                    <input type="number" name="quantity" value="0" title="Gramm">
-                                </div>
-                                
-                                <div class="log-input-group">
-                                    <span style="font-size: 12px; color: gray;">darab:</span>
-                                    <input type="number" name="pieces" value="1" step="0.5" title="Darab">
-                                </div>
-
-                                <button type="submit" name="add_combined_to_log" class="uniform-btn" style="background-color: #4361ee;">Hozzáadás</button>
-                            </form>
+                            <?php if(isset($f['is_api']) && $f['is_api']): ?>
+                                <form method="POST" class="combined-log-form">
+                                    <input type="hidden" name="api_name" value="<?php echo htmlspecialchars($f['name']); ?>">
+                                    <input type="hidden" name="api_cal" value="<?php echo $f['calories_100g']; ?>">
+                                    <input type="hidden" name="api_prot" value="<?php echo $f['protein_100g']; ?>">
+                                    <input type="hidden" name="api_carb" value="<?php echo $f['carbs_100g']; ?>">
+                                    <input type="hidden" name="api_fat" value="<?php echo $f['fat_100g']; ?>">
+                                    <div class="log-input-group">
+                                        <input type="number" name="quantity" value="100">
+                                    </div>
+                                    <button type="submit" name="add_api_food" class="uniform-btn" style="background-color: #2ec4b6;">Mentés</button>
+                                </form>
+                            <?php else: ?>
+                                <form method="POST" class="combined-log-form">
+                                    <input type="hidden" name="food_id" value="<?php echo $f['id']; ?>">
+                                    <div class="log-input-group">
+                                        <span style="font-size: 12px; color: gray;">+ g:</span>
+                                        <input type="number" name="quantity" value="0">
+                                    </div>
+                                    <div class="log-input-group">
+                                        <span style="font-size: 12px; color: gray;">db:</span>
+                                        <input type="number" name="pieces" value="1" step="0.5">
+                                    </div>
+                                    <button type="submit" name="add_combined_to_log" class="uniform-btn" style="background-color: #4361ee;">Hozzáadás</button>
+                                </form>
+                            <?php endif; ?>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -515,12 +649,10 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                         <a href="dashboard.php?delete_id=<?php echo $l['id']; ?>" class="delete-btn" onclick="return confirm('Biztosan törlöd?')">Törlés</a>
                     </td>
                 </tr>
-                
                 <?php endwhile; ?>
             </tbody>
         </table>
     </section>
 </div>
-
 </body>
 </html>
