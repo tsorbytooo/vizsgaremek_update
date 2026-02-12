@@ -84,6 +84,8 @@ if (isset($_POST['reg'])) {
     <!-- Oldal címe -->
     <title>Regisztráció</title>
 
+    <script src="theme-handler.js"></script>
+
     <style>
         /* 
             CSS változók definiálása az egységes színkezeléshez 

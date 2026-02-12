@@ -13,8 +13,9 @@ if ($user_id) {
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
-    <title>Rólunk - Calorie Tracker</title>
+    <title>Rólunk - Kalória Center</title>
     <link rel="stylesheet" href="style.css">
+    <script src="theme-handler.js"></script>
     <style>
         body {
             margin: 0;
@@ -81,7 +82,7 @@ if ($user_id) {
     <section class="card-section" style="padding: 40px; border-radius: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
         <h1 style="font-size: 2.5rem; margin-bottom: 10px;">Rólunk</h1>
         <p style="font-size: 1.1rem; line-height: 1.6; color: #64748b;">
-            A <strong>Calorie Tracker</strong> célja az egyszerűség. Sigma által fejlesztve, neked.
+            A <strong>Kalória Center</strong> célja egyszerű: megkönnyíteni a kalóriaszámlálást és az egészséges életmódot. Nem csak egy app vagyunk, hanem egy közösség, ahol a tudatosság és a támogatás kéz a kézben jár. Legyen szó kezdőkről vagy tapasztaltabbakról, nálunk mindenki megtalálja a helyét.
         </p>
         
         <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee; opacity: 0.5;">
