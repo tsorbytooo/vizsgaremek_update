@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2026. Feb 12. 09:33
+-- Létrehozás ideje: 2026. Feb 12. 10:39
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -20,6 +20,37 @@ SET time_zone = "+00:00";
 --
 -- Adatbázis: `caloria_center`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `custom_recipes`
+--
+
+CREATE TABLE `custom_recipes` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `total_calories` int(11) NOT NULL DEFAULT 0,
+  `ingredients` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `custom_recipes`
+--
+
+INSERT INTO `custom_recipes` (`id`, `user_id`, `name`, `total_calories`, `ingredients`, `created_at`) VALUES
+(1, 1, 'Sajtos-Sonkás Panini', 420, '1 db panini kenyér, 2 szelet gépsonka, 2 szelet cheddar sajt, 5g vaj', '2026-02-11 11:23:03'),
+(2, 1, 'Tonhalas Teljes Kiőrlésű Szendvics', 310, '2 szelet tk. kenyér, 50g konzerv tonhal (saját lében), 10g light majonéz, salátalevél', '2026-02-11 11:23:03'),
+(3, 1, 'Avokádós Tojásos Pirítós', 385, '1 szelet rozskenyér, fél avokádó, 1 db tükörtojás, csipet só', '2026-02-11 11:23:03'),
+(4, 1, 'Mogyoróvajas-Banános Zabkása', 450, '50g zabpehely, 2dl tej, 1 evőkanál mogyoróvaj, fél banán', '2026-02-11 11:23:03'),
+(5, 1, 'Csirkés Wrap', 520, '1 db tortilla lap, 100g sült csirkemell, jégsaláta, 1 ek. joghurtos öntet', '2026-02-11 11:23:03'),
+(6, 1, 'Görög Joghurtos Müzli', 290, '200g görög joghurt, 30g granola, pár szem áfonya', '2026-02-11 11:23:03'),
+(7, 1, 'Szalámis-Paprikás Bagett', 510, 'fél fehér bagett, 30g téliszalámi, 10g margarin, fél kápia paprika', '2026-02-11 11:23:03'),
+(8, 1, 'Kőrözöttes Puffasztott Búza', 180, '3 db puffasztott búza, 60g házi kőrözött, 2 szál újhagyma', '2026-02-11 11:23:03'),
+(9, 1, 'Hummuszos Zöldséges Pita', 340, '1 db teljes kiőrlésű pita, 50g hummusz, reszelt répa, uborka', '2026-02-11 11:23:03'),
+(10, 1, 'Nutellás Amerikai Palacsinta (3db)', 620, '3 db palacsinta, 2 ek. Nutella, 5g porcukor', '2026-02-11 11:23:03');
 
 -- --------------------------------------------------------
 
@@ -137,7 +168,8 @@ INSERT INTO `foods` (`id`, `name`, `calories_100g`, `protein_100g`, `carbs_100g`
 (68, 'Hummusz', 166.00, 7.90, 14.30, 9.60, 6.00, 0.30, 0.950, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
 (69, 'Gomba (csiperke)', 22.00, 3.10, 3.30, 0.30, 1.00, 2.00, 0.005, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
 (70, 'Paradicsom', 18.00, 0.90, 3.90, 0.20, 1.20, 2.60, 0.005, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
-(71, 'Paprika (TV)', 20.00, 1.00, 3.00, 0.30, 1.20, 2.40, 0.002, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL);
+(71, 'Paprika (TV)', 20.00, 1.00, 3.00, 0.30, 1.20, 2.40, 0.002, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
+(74, 'fasz', 150.00, NULL, NULL, NULL, NULL, NULL, NULL, 'g', 'local', '2026-02-11 14:09:44', '', 9);
 
 -- --------------------------------------------------------
 
@@ -155,6 +187,13 @@ CREATE TABLE `support_tickets` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- A tábla adatainak kiíratása `support_tickets`
+--
+
+INSERT INTO `support_tickets` (`id`, `user_id`, `subject`, `message`, `category`, `status`, `created_at`) VALUES
+(2, 9, 'teszt', 'kiki', 'Feedback', 'Closed', '2026-02-11 10:36:56');
+
 -- --------------------------------------------------------
 
 --
@@ -170,23 +209,23 @@ CREATE TABLE `users` (
   `height` int(11) DEFAULT NULL,
   `weight` int(11) DEFAULT NULL,
   `age` int(11) DEFAULT NULL,
-  `gender` enum('male','female') DEFAULT NULL
+  `gender` enum('male','female') DEFAULT NULL,
+  `theme` varchar(10) DEFAULT 'light'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- A tábla adatainak kiíratása `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password`, `premium`, `height`, `weight`, `age`, `gender`) VALUES
-(1, 'Remek Elek', 'remekelek@gmail.com', 'remekelek123', 0, NULL, NULL, NULL, NULL),
-(2, 'Pahotsa Henrik', 'henrikabest@gmail.com', 'henrikhenrik123', 1, NULL, NULL, NULL, NULL),
-(3, 'nigger', 'nyomorekvagyok@gmail.com', 'csorba', 0, NULL, NULL, NULL, NULL),
-(4, 'nigger', 'nyomorekvagyok@gmail.com', 'csorba', 0, NULL, NULL, NULL, NULL),
-(6, 'Schnepp Ádám', 'adam@gmail.com', '$2y$10$xwfF0Fdt4mRSH8xZS3vuu.FhdGnRfVhDTa496douxc4lQcQ77qSLG', 1, 170, 95, 19, 'male'),
-(7, 'Szőke Császár Bálint', 'szokebalintdeazeredeti@gmail.com', '$2y$10$smFWpselm2qSQ.3lJqj6lODwutnZnscaOQq1cnEUjDoKkDfBoVPe.', 0, 120, 140, 12, 'female'),
-(8, 'nigger', 'nigger@gmail.com', '$2y$10$mxUtxDgmsP2eSH28zszhseoqXhcph6qyphWld3czU5AgvGIWC4Jd6', 1, 200, 67, 35, 'male'),
-(9, 'csorba', 'admin@gmail.com', '$2y$10$pkOxgkEza6da7Gk6TW4vDemHqVeeSiiE3yIAGMIZklnrZ0fD5e/da', 1, 180, 75, 20, 'male'),
-(10, 'wawa', 'nadszintia@gmail.com', '$2y$10$KLGjhqIstHphvuHqCVkjbubXsJrCvEJtOsBgu1cBVV9kGg/gzBoJS', 1, 180, 65, 21, 'female');
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `premium`, `height`, `weight`, `age`, `gender`, `theme`) VALUES
+(1, 'Remek Elek', 'remekelek@gmail.com', 'remekelek123', 0, NULL, NULL, NULL, NULL, 'light'),
+(2, 'Pahotsa Henrik', 'henrikabest@gmail.com', 'henrikhenrik123', 1, NULL, NULL, NULL, NULL, 'light'),
+(3, 'nigger', 'nyomorekvagyok@gmail.com', 'csorba', 0, NULL, NULL, NULL, NULL, 'light'),
+(4, 'nigger', 'nyomorekvagyok@gmail.com', 'csorba', 0, NULL, NULL, NULL, NULL, 'light'),
+(6, 'Schnepp Ádám', 'adam@gmail.com', '$2y$10$xwfF0Fdt4mRSH8xZS3vuu.FhdGnRfVhDTa496douxc4lQcQ77qSLG', 1, 170, 95, 19, 'male', 'light'),
+(7, 'Szőke Császár Bálint', 'szokebalintdeazeredeti@gmail.com', '$2y$10$smFWpselm2qSQ.3lJqj6lODwutnZnscaOQq1cnEUjDoKkDfBoVPe.', 0, 120, 140, 12, 'female', 'light'),
+(8, 'nigger', 'nigger@gmail.com', '$2y$10$mxUtxDgmsP2eSH28zszhseoqXhcph6qyphWld3czU5AgvGIWC4Jd6', 1, 200, 67, 35, 'male', 'light'),
+(9, 'csorba', 'admin@gmail.com', '$2y$10$pkOxgkEza6da7Gk6TW4vDemHqVeeSiiE3yIAGMIZklnrZ0fD5e/da', 0, 180, 75, 20, 'male', 'light');
 
 -- --------------------------------------------------------
 
@@ -220,11 +259,46 @@ INSERT INTO `user_food_log` (`id`, `user_id`, `food_id`, `quantity`, `log_date`,
 (13, 6, 37, 263.00, '2026-01-30', '2026-01-30 13:51:36'),
 (14, 6, 37, 263.00, '2026-02-04', '2026-02-04 09:04:59'),
 (15, 6, 38, 89.00, '2026-02-04', '2026-02-04 13:16:39'),
-(21, 8, 20, 100.00, '2026-02-11', '2026-02-11 08:34:58');
+(21, 8, 20, 100.00, '2026-02-11', '2026-02-11 08:34:58'),
+(34, 9, 53, 153.00, '2026-02-11', '2026-02-11 14:07:58'),
+(35, 9, 53, 150.00, '2026-02-11', '2026-02-11 14:09:03'),
+(37, 9, 74, 150.00, '2026-02-11', '2026-02-11 14:10:16');
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `water_log`
+--
+
+CREATE TABLE `water_log` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `amount` float NOT NULL,
+  `log_date` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- A tábla adatainak kiíratása `water_log`
+--
+
+INSERT INTO `water_log` (`id`, `user_id`, `amount`, `log_date`) VALUES
+(38, 9, 0.25, '2026-02-12'),
+(39, 9, 0.5, '2026-02-12'),
+(40, 9, 1, '2026-02-12'),
+(41, 9, 0.5, '2026-02-12'),
+(42, 9, 0.25, '2026-02-12'),
+(43, 9, 0.25, '2026-02-12');
 
 --
 -- Indexek a kiírt táblákhoz
 --
+
+--
+-- A tábla indexei `custom_recipes`
+--
+ALTER TABLE `custom_recipes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- A tábla indexei `favorites`
@@ -260,8 +334,20 @@ ALTER TABLE `user_food_log`
   ADD KEY `food_id` (`food_id`);
 
 --
+-- A tábla indexei `water_log`
+--
+ALTER TABLE `water_log`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- A kiírt táblák AUTO_INCREMENT értéke
 --
+
+--
+-- AUTO_INCREMENT a táblához `custom_recipes`
+--
+ALTER TABLE `custom_recipes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT a táblához `favorites`
@@ -273,29 +359,41 @@ ALTER TABLE `favorites`
 -- AUTO_INCREMENT a táblához `foods`
 --
 ALTER TABLE `foods`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT a táblához `support_tickets`
 --
 ALTER TABLE `support_tickets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT a táblához `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT a táblához `user_food_log`
 --
 ALTER TABLE `user_food_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+
+--
+-- AUTO_INCREMENT a táblához `water_log`
+--
+ALTER TABLE `water_log`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- Megkötések a kiírt táblákhoz
 --
+
+--
+-- Megkötések a táblához `custom_recipes`
+--
+ALTER TABLE `custom_recipes`
+  ADD CONSTRAINT `custom_recipes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Megkötések a táblához `user_food_log`
