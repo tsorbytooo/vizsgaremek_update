@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2026. Feb 11. 10:55
+-- Létrehozás ideje: 2026. Feb 12. 09:33
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -155,13 +155,6 @@ CREATE TABLE `support_tickets` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- A tábla adatainak kiíratása `support_tickets`
---
-
-INSERT INTO `support_tickets` (`id`, `user_id`, `subject`, `message`, `category`, `status`, `created_at`) VALUES
-(1, 8, 'nem mukodik halo', 'valami nem jo', 'Support', 'Closed', '2026-02-11 08:56:47');
-
 -- --------------------------------------------------------
 
 --
@@ -192,7 +185,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `premium`, `height`, `we
 (6, 'Schnepp Ádám', 'adam@gmail.com', '$2y$10$xwfF0Fdt4mRSH8xZS3vuu.FhdGnRfVhDTa496douxc4lQcQ77qSLG', 1, 170, 95, 19, 'male'),
 (7, 'Szőke Császár Bálint', 'szokebalintdeazeredeti@gmail.com', '$2y$10$smFWpselm2qSQ.3lJqj6lODwutnZnscaOQq1cnEUjDoKkDfBoVPe.', 0, 120, 140, 12, 'female'),
 (8, 'nigger', 'nigger@gmail.com', '$2y$10$mxUtxDgmsP2eSH28zszhseoqXhcph6qyphWld3czU5AgvGIWC4Jd6', 1, 200, 67, 35, 'male'),
-(9, 'csorba', 'admin@gmail.com', '$2y$10$pkOxgkEza6da7Gk6TW4vDemHqVeeSiiE3yIAGMIZklnrZ0fD5e/da', 0, 180, 75, 20, 'male');
+(9, 'csorba', 'admin@gmail.com', '$2y$10$pkOxgkEza6da7Gk6TW4vDemHqVeeSiiE3yIAGMIZklnrZ0fD5e/da', 1, 180, 75, 20, 'male'),
+(10, 'wawa', 'nadszintia@gmail.com', '$2y$10$KLGjhqIstHphvuHqCVkjbubXsJrCvEJtOsBgu1cBVV9kGg/gzBoJS', 1, 180, 65, 21, 'female');
 
 -- --------------------------------------------------------
 
@@ -291,13 +285,13 @@ ALTER TABLE `support_tickets`
 -- AUTO_INCREMENT a táblához `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT a táblához `user_food_log`
 --
 ALTER TABLE `user_food_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- Megkötések a kiírt táblákhoz
