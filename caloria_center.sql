@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2026. Feb 12. 10:39
+-- Létrehozás ideje: 2026. Feb 12. 14:18
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -70,6 +70,27 @@ CREATE TABLE `favorites` (
 
 INSERT INTO `favorites` (`id`, `user_id`, `food_id`) VALUES
 (1, 6, 37);
+
+-- --------------------------------------------------------
+
+--
+-- Tábla szerkezet ehhez a táblához `feedbacks`
+--
+
+CREATE TABLE `feedbacks` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `rating` int(1) NOT NULL,
+  `comment` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- A tábla adatainak kiíratása `feedbacks`
+--
+
+INSERT INTO `feedbacks` (`id`, `user_id`, `rating`, `comment`, `created_at`) VALUES
+(1, 9, 5, 'naon jo\r\n', '2026-02-12 13:17:00');
 
 -- --------------------------------------------------------
 
@@ -282,12 +303,9 @@ CREATE TABLE `water_log` (
 --
 
 INSERT INTO `water_log` (`id`, `user_id`, `amount`, `log_date`) VALUES
-(38, 9, 0.25, '2026-02-12'),
-(39, 9, 0.5, '2026-02-12'),
-(40, 9, 1, '2026-02-12'),
-(41, 9, 0.5, '2026-02-12'),
-(42, 9, 0.25, '2026-02-12'),
-(43, 9, 0.25, '2026-02-12');
+(44, 9, 0.25, '2026-02-12'),
+(45, 9, 0.25, '2026-02-12'),
+(46, 9, 0.25, '2026-02-12');
 
 --
 -- Indexek a kiírt táblákhoz
@@ -306,6 +324,13 @@ ALTER TABLE `custom_recipes`
 ALTER TABLE `favorites`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `user_id` (`user_id`,`food_id`);
+
+--
+-- A tábla indexei `feedbacks`
+--
+ALTER TABLE `feedbacks`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- A tábla indexei `foods`
@@ -356,6 +381,12 @@ ALTER TABLE `favorites`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT a táblához `feedbacks`
+--
+ALTER TABLE `feedbacks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT a táblához `foods`
 --
 ALTER TABLE `foods`
@@ -383,7 +414,7 @@ ALTER TABLE `user_food_log`
 -- AUTO_INCREMENT a táblához `water_log`
 --
 ALTER TABLE `water_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- Megkötések a kiírt táblákhoz
@@ -394,6 +425,12 @@ ALTER TABLE `water_log`
 --
 ALTER TABLE `custom_recipes`
   ADD CONSTRAINT `custom_recipes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Megkötések a táblához `feedbacks`
+--
+ALTER TABLE `feedbacks`
+  ADD CONSTRAINT `feedbacks_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Megkötések a táblához `user_food_log`
