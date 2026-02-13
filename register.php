@@ -1,72 +1,37 @@
 <?php
-// PHP session indítása, hogy a felhasználóhoz kapcsolódó adatokat
-// (pl. hibaüzeneteket) több oldalon keresztül is kezelni tudjuk
 session_start();
-
-// Adatbázis-kapcsolat betöltése
-// Ez a fájl hozza létre a $conn változót
 require 'database_connect.php';
 
-// Hibák tárolására szolgáló változó inicializálása
 $error = "";
 
-// Ellenőrizzük, hogy a regisztrációs űrlapot elküldték-e
-// A gomb neve: reg
 if (isset($_POST['reg'])) {
-
-    // A felhasználó által megadott név beolvasása
-    // mysqli_real_escape_string védi az adatbázist az SQL injection támadásoktól
+    // Adatok tisztítása
     $name = mysqli_real_escape_string($conn, $_POST['name']);
-
-    // E-mail cím biztonságos beolvasása
     $email = mysqli_real_escape_string($conn, $_POST['email']);
-
-    // A jelszó titkosítása
-    // PASSWORD_DEFAULT az aktuálisan legbiztonságosabb algoritmust használja
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-
-    // Magasság egész számmá alakítása
     $height = (int)$_POST['height'];
-
-    // Súly egész számmá alakítása
     $weight = (int)$_POST['weight'];
-
-    // Életkor egész számmá alakítása
     $age = (int)$_POST['age'];
-
-    // Nem (gender) biztonságos beolvasása
     $gender = mysqli_real_escape_string($conn, $_POST['gender']);
 
-    // Ellenőrizzük, hogy az e-mail cím már létezik-e az adatbázisban
+    // Ellenőrizzük, létezik-e már
     $check_email = mysqli_query($conn, "SELECT id FROM users WHERE email='$email'");
 
-    // Ha a lekérdezés legalább egy sort ad vissza,
-    // akkor az e-mail cím már regisztrálva van
     if (mysqli_num_rows($check_email) > 0) {
-
-        // Hibaüzenet beállítása
         $error = "Ez az e-mail cím már regisztrálva van!";
-
     } else {
+        // AZ SQL FÁJLOD ALAPJÁN EZ A PONTOS MEZŐSORREND ÉS LISTA
+        // Hozzáadtuk a 'premium' (0) és a 'theme' ('dark') értékeket is
+        $sql = "INSERT INTO users (name, email, password, height, weight, age, gender, premium, theme) 
+                VALUES ('$name', '$email', '$password', $height, $weight, $age, '$gender', 0, 'dark')";
 
-        // SQL lekérdezés az új felhasználó adatainak beszúrására
-        // A premium mező értéke 0, vagyis alapértelmezetten nem prémium
-        $sql = "INSERT INTO users (name, email, password, height, weight, age, gender, premium) 
-                VALUES ('$name', '$email', '$password', $height, $weight, $age, '$gender', 0)";
-
-        // Az SQL utasítás végrehajtása
         if (mysqli_query($conn, $sql)) {
-
-            // Sikeres regisztráció esetén átirányítjuk a felhasználót
-            // a bejelentkezési oldalra
+            // Ha sikerült a mentés, CSAK AKKOR irányítunk át
             header("Location: login.php?msg=success");
             exit();
-
         } else {
-
-            // Ha az adatbázis művelet sikertelen volt,
-            // hibaüzenetet állítunk be
-            $error = "Hiba történt a mentés során!";
+            // Ha itt hiba van, azt KI KELL ÍRNIA a képernyőre!
+            $error = "Adatbázis hiba: " . mysqli_error($conn);
         }
     }
 }
