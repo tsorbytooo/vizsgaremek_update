@@ -50,10 +50,13 @@ if (isset($_GET['toggle_favorite'])) {
     header("Location: dashboard.php"); exit();
 }
 
-// --- MANUÁLIS ÉTEL FELTÖLTÉS + KÉP ---
+// --- MANUÁLIS ÉTEL FELTÖLTÉS + KÉP + MAKRÓK ---
 if (isset($_POST['add_custom_food'])) {
     $name = mysqli_real_escape_string($conn, $_POST['food_name']);
     $cal = (float)$_POST['food_cal'];
+    $prot = (float)($_POST['food_prot'] ?? 0);
+    $carb = (float)($_POST['food_carb'] ?? 0);
+    $fat = (float)($_POST['food_fat'] ?? 0);
     $image_name = null;
 
     if (!empty($_FILES['food_image']['name'])) {
@@ -61,7 +64,8 @@ if (isset($_POST['add_custom_food'])) {
         move_uploaded_file($_FILES['food_image']['tmp_name'], 'uploads/' . $image_name);
     }
 
-    $ins_food = "INSERT INTO foods (name, calories_100g, image, created_by) VALUES ('$name', $cal, '$image_name', $user_id)";
+    $ins_food = "INSERT INTO foods (name, calories_100g, protein_100g, carbs_100g, fat_100g, image, created_by) 
+                 VALUES ('$name', $cal, $prot, $carb, $fat, '$image_name', $user_id)";
     if (mysqli_query($conn, $ins_food)) {
         $new_id = mysqli_insert_id($conn);
         $qty = (float)$_POST['food_qty'];
@@ -414,7 +418,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                     <a href="premium.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">⭐ Prémium tagság</a>
                     <a href="my_recipes.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">📖 Saját Recepttáram</a>
                     <a href="support.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">📧 Support & Feedback</a>
-                    <a href="about.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">ℹ️ Rólunk</a>
+                    <a href="rolunk" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">ℹ️ Rólunk</a>
                     <a href="help.php" style="color: #2b2d42; padding: 14px 20px; text-decoration: none; display: block; border-bottom: 1px solid #f8f9fd;">❓ Segítség / GYIK</a>
                     <a href="logout.php" style="color: #e71d36; padding: 14px 20px; text-decoration: none; display: block; font-weight: bold; border-top: 1px solid #f8f9fd;">🚪 Kijelentkezés</a>
                     <?php if ($user_id == 9): ?>
@@ -636,10 +640,13 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                 <div class="manual-add-box" style="background: #f1f4ff; padding: 15px; border-radius: 12px; margin-top: 10px;">
                     <p style="font-size: 14px; font-weight: bold;">Nincs ilyen étel? Add hozzá manuálisan!</p>
                     <form method="POST" enctype="multipart/form-data" style="display: grid; gap: 10px;">
-                        <input type="text" name="food_name" value="<?php echo htmlspecialchars($_GET['q']); ?>" placeholder="Étel neve" required>
-                        <div style="display: flex; gap: 10px;">
+                        <input type="text" name="food_name" value="<?php echo htmlspecialchars($_GET['q']); ?>" placeholder="Étel/Ital neve" required>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                             <input type="number" name="food_cal" placeholder="kcal/100g" required>
-                            <input type="number" name="food_qty" placeholder="Megevett g" required>
+                            <input type="number" name="food_qty" placeholder="Mennyiség (g/ml)" required>
+                            <input type="number" name="food_prot" step="0.1" placeholder="Fehérje/100g">
+                            <input type="number" name="food_carb" step="0.1" placeholder="Szénhidrát/100g">
+                            <input type="number" name="food_fat" step="0.1" placeholder="Zsír/100g">
                         </div>
                         <label style="font-size: 12px; color: var(--text-muted);">Kép feltöltése (opcionális):</label>
                         <input type="file" name="food_image" accept="image/*">
