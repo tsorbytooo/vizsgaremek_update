@@ -211,8 +211,8 @@ if (isset($_POST['reg'])) {
         <?php endif; ?>
 
         <div class="form-container">
-            <!-- Regisztrációs űrlap -->
-            <form action="register.php" method="POST">
+            <!-- JAVÍTVA: action üresen hagyva, hogy ugyanarra az URL-re küldjön, ahonnan érkezett -->
+            <form action="" method="POST">
 
                 <div class="form-group">
                     <label>Teljes név</label>
@@ -261,7 +261,8 @@ if (isset($_POST['reg'])) {
 
         <p class="footer-text">
             Van már fiókod? <br>
-            <a href="login.php" class="white-link">Jelentkezz be!</a>
+            <!-- JAVÍTVA: .htaccess alias használata a linkben -->
+            <a href="bejelentkezes" class="white-link">Jelentkezz be!</a>
         </p>
     </div>
 
