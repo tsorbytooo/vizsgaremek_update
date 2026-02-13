@@ -1,6 +1,6 @@
 RewriteEngine On
 # Módosítva a te elérési utadra:
-RewriteBase /vizsgaremek/
+RewriteBase /vizsgaremek_update/
 
 # 1. Ha valaki .php kiterjesztéssel hívná meg (pl. dashboard.php), eldobjuk a kiterjesztést (301 redirect)
 # Kivéve, ha belső átirányítás történik (ez akadályozza meg a hurkot)
