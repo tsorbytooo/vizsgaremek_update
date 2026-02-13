@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2026. Feb 12. 14:18
+-- Létrehozás ideje: 2026. Feb 13. 14:06
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -35,22 +35,6 @@ CREATE TABLE `custom_recipes` (
   `ingredients` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
-
---
--- A tábla adatainak kiíratása `custom_recipes`
---
-
-INSERT INTO `custom_recipes` (`id`, `user_id`, `name`, `total_calories`, `ingredients`, `created_at`) VALUES
-(1, 1, 'Sajtos-Sonkás Panini', 420, '1 db panini kenyér, 2 szelet gépsonka, 2 szelet cheddar sajt, 5g vaj', '2026-02-11 11:23:03'),
-(2, 1, 'Tonhalas Teljes Kiőrlésű Szendvics', 310, '2 szelet tk. kenyér, 50g konzerv tonhal (saját lében), 10g light majonéz, salátalevél', '2026-02-11 11:23:03'),
-(3, 1, 'Avokádós Tojásos Pirítós', 385, '1 szelet rozskenyér, fél avokádó, 1 db tükörtojás, csipet só', '2026-02-11 11:23:03'),
-(4, 1, 'Mogyoróvajas-Banános Zabkása', 450, '50g zabpehely, 2dl tej, 1 evőkanál mogyoróvaj, fél banán', '2026-02-11 11:23:03'),
-(5, 1, 'Csirkés Wrap', 520, '1 db tortilla lap, 100g sült csirkemell, jégsaláta, 1 ek. joghurtos öntet', '2026-02-11 11:23:03'),
-(6, 1, 'Görög Joghurtos Müzli', 290, '200g görög joghurt, 30g granola, pár szem áfonya', '2026-02-11 11:23:03'),
-(7, 1, 'Szalámis-Paprikás Bagett', 510, 'fél fehér bagett, 30g téliszalámi, 10g margarin, fél kápia paprika', '2026-02-11 11:23:03'),
-(8, 1, 'Kőrözöttes Puffasztott Búza', 180, '3 db puffasztott búza, 60g házi kőrözött, 2 szál újhagyma', '2026-02-11 11:23:03'),
-(9, 1, 'Hummuszos Zöldséges Pita', 340, '1 db teljes kiőrlésű pita, 50g hummusz, reszelt répa, uborka', '2026-02-11 11:23:03'),
-(10, 1, 'Nutellás Amerikai Palacsinta (3db)', 620, '3 db palacsinta, 2 ek. Nutella, 5g porcukor', '2026-02-11 11:23:03');
 
 -- --------------------------------------------------------
 
@@ -90,7 +74,7 @@ CREATE TABLE `feedbacks` (
 --
 
 INSERT INTO `feedbacks` (`id`, `user_id`, `rating`, `comment`, `created_at`) VALUES
-(1, 9, 5, 'naon jo\r\n', '2026-02-12 13:17:00');
+(2, 9, 5, '', '2026-02-13 12:21:25');
 
 -- --------------------------------------------------------
 
@@ -157,9 +141,6 @@ INSERT INTO `foods` (`id`, `name`, `calories_100g`, `protein_100g`, `carbs_100g`
 (35, 'Coco Délicieuse et Tropicale', 20.00, 0.10, NULL, NULL, NULL, NULL, NULL, 'g', 'local', '2026-01-28 13:31:23', NULL, NULL),
 (36, 'Alpro Not Milk', 59.00, 0.70, NULL, NULL, NULL, NULL, NULL, 'g', 'local', '2026-01-28 13:31:23', NULL, NULL),
 (37, 'Tripla Cheesy', 257.00, 16.00, 13.00, 15.00, NULL, NULL, NULL, 'g', '', '2026-01-30 11:32:22', NULL, NULL),
-(38, 'muzli', 265.00, NULL, NULL, NULL, NULL, NULL, NULL, 'g', 'local', '2026-02-04 13:16:39', '1770210999_ronaldo.gif', 6),
-(39, 'husi', 67.00, NULL, NULL, NULL, NULL, NULL, NULL, 'g', 'local', '2026-02-06 11:36:25', '1770377785_fugelaci.jpg', 8),
-(41, 'siu', 67.00, NULL, NULL, NULL, NULL, NULL, NULL, 'g', 'local', '2026-02-06 11:44:46', '1770378286_ronaldo.jpg', 8),
 (42, 'Garnélarák (főtt)', 99.00, 24.00, 0.20, 0.30, 0.00, 0.00, 1.100, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
 (43, 'Tőkehal filé', 82.00, 18.00, 0.00, 0.70, 0.00, 0.00, 0.130, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
 (44, 'Hekk filé', 89.00, 17.20, 0.00, 2.20, 0.00, 0.00, 0.150, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
@@ -190,7 +171,95 @@ INSERT INTO `foods` (`id`, `name`, `calories_100g`, `protein_100g`, `carbs_100g`
 (69, 'Gomba (csiperke)', 22.00, 3.10, 3.30, 0.30, 1.00, 2.00, 0.005, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
 (70, 'Paradicsom', 18.00, 0.90, 3.90, 0.20, 1.20, 2.60, 0.005, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
 (71, 'Paprika (TV)', 20.00, 1.00, 3.00, 0.30, 1.20, 2.40, 0.002, 'g', 'local', '2026-02-11 08:42:08', NULL, NULL),
-(74, 'fasz', 150.00, NULL, NULL, NULL, NULL, NULL, NULL, 'g', 'local', '2026-02-11 14:09:44', '', 9);
+(72, 'Húsleves (gazdagon)', 45.00, 3.20, 4.10, 1.80, 0.50, 0.80, 1.200, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(73, 'Pacalpörkölt', 155.00, 14.50, 2.10, 9.80, 0.00, 0.50, 1.500, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(74, 'Rántott hús (sertés)', 285.00, 18.00, 15.00, 17.50, 1.20, 0.30, 1.100, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(75, 'Bableves füstölt hússal', 110.00, 7.50, 12.00, 4.50, 3.80, 1.10, 1.400, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(76, 'Töltött káposzta', 135.00, 6.80, 8.50, 8.20, 2.50, 1.20, 1.600, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(77, 'Gulyásleves', 85.00, 5.50, 7.20, 3.80, 1.40, 0.90, 1.300, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(78, 'Paprikás krumpli kolbásszal', 125.00, 4.20, 16.50, 5.80, 2.10, 1.00, 1.400, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(79, 'Sült krumpli (mirelit, sült)', 290.00, 3.40, 38.00, 14.00, 3.20, 0.50, 0.800, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(80, 'Pörkölt (sertés lapocka)', 185.00, 16.50, 2.50, 12.40, 0.00, 0.80, 1.400, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(81, 'Bolognai spagetti', 160.00, 7.80, 22.00, 5.20, 1.50, 2.40, 0.900, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(82, 'Milka Alpesi Tejcsokoládé', 530.00, 6.30, 58.50, 29.50, 1.80, 57.00, 0.370, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(83, 'Haribo Gumicukor (Goldbären)', 343.00, 6.90, 77.00, 0.50, 0.00, 46.00, 0.070, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(84, 'Kinder Tejszelet', 422.00, 7.90, 34.00, 27.90, 0.00, 29.50, 0.230, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(85, 'Kinder Bueno', 572.00, 8.60, 49.50, 37.30, 0.00, 41.20, 0.270, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(86, 'Lays Sós Chips', 536.00, 6.40, 52.00, 33.00, 4.30, 0.50, 1.600, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(87, 'Pringles (Hagymás-tejfölös)', 515.00, 4.20, 52.00, 32.00, 2.80, 2.50, 1.700, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(88, 'Balaton Szelet (ét)', 525.00, 5.40, 59.00, 28.50, 3.10, 42.00, 0.200, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(89, 'Oreo Keksz', 476.00, 4.80, 68.00, 20.00, 2.40, 38.00, 0.730, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(90, 'Twix', 495.00, 4.40, 65.00, 24.00, 0.00, 49.00, 0.440, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(91, 'Sport Szelet (ét)', 455.00, 3.90, 68.00, 18.50, 0.00, 62.00, 0.100, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(92, 'Uborka (kígyó)', 15.00, 0.60, 3.60, 0.10, 0.50, 1.70, 0.002, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(93, 'Sárgarépa (nyers)', 41.00, 0.90, 9.60, 0.20, 2.80, 4.70, 0.070, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(94, 'Karfiol', 25.00, 1.90, 5.00, 0.30, 2.00, 1.90, 0.030, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(95, 'Brokkoli', 34.00, 2.80, 6.60, 0.40, 2.60, 1.70, 0.033, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(96, 'Krumpli (főtt)', 77.00, 2.00, 17.50, 0.10, 2.20, 0.80, 0.010, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(97, 'Banán', 89.00, 1.10, 22.80, 0.30, 2.60, 12.20, 0.001, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(98, 'Körte', 57.00, 0.40, 15.00, 0.10, 3.10, 9.80, 0.001, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(99, 'Narancs', 47.00, 0.90, 11.80, 0.10, 2.40, 9.40, 0.001, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(100, 'Coca-Cola (Classic)', 42.00, 0.00, 10.60, 0.00, 0.00, 10.60, 0.000, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(101, 'Tej (2.8%)', 58.00, 3.20, 4.70, 2.80, 0.00, 4.70, 0.100, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(102, 'Sör (világos)', 43.00, 0.50, 3.60, 0.00, 0.00, 0.10, 0.010, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(103, 'Vaj', 717.00, 0.90, 0.10, 81.00, 0.00, 0.10, 0.011, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(104, 'Ketchup', 101.00, 1.30, 23.20, 0.10, 0.70, 23.10, 2.300, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(105, 'Mustár', 66.00, 4.40, 5.20, 4.00, 2.00, 0.90, 2.500, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(106, 'Majonéz', 680.00, 1.00, 3.00, 75.00, 0.00, 2.50, 1.500, 'g', 'local', '2026-02-13 12:22:42', NULL, NULL),
+(107, 'Kakaós csiga', 345.00, 6.50, 48.00, 14.00, 2.10, 18.00, 0.600, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(108, 'Túrós táska', 310.00, 8.20, 42.00, 12.00, 1.50, 14.00, 0.500, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(109, 'Kifli (tejes)', 282.00, 8.50, 56.00, 2.50, 2.80, 4.00, 1.200, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(110, 'Zsemle', 275.00, 8.00, 57.00, 1.20, 3.00, 2.50, 1.300, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(111, 'Vajas croissant', 406.00, 8.20, 45.00, 21.00, 2.60, 11.00, 0.900, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(112, 'Gyros tál (hasábbal, öntettel)', 210.00, 12.00, 15.00, 11.00, 1.80, 1.50, 1.800, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(113, 'Pizza Margherita', 266.00, 11.00, 33.00, 10.00, 2.30, 3.50, 1.500, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(114, 'Pizza Hawaii', 245.00, 10.50, 31.00, 8.50, 2.00, 6.20, 1.400, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(115, 'Hot-dog', 247.00, 10.00, 18.00, 15.00, 0.80, 4.20, 2.100, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(116, 'Chicken Nuggets (6 db)', 297.00, 15.00, 18.00, 18.00, 1.00, 0.50, 1.200, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(117, 'Székelykáposzta', 105.00, 5.80, 6.20, 6.50, 2.80, 1.40, 1.500, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(118, 'Paradicsomos káposzta', 85.00, 1.50, 14.00, 2.80, 2.40, 9.50, 1.100, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(119, 'Zöldborsófőzelék', 115.00, 5.20, 16.00, 3.50, 4.80, 6.50, 1.200, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(120, 'Krumplifőzelék', 95.00, 2.80, 14.50, 3.20, 1.90, 1.20, 1.300, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(121, 'Aranygaluska vanília sodóval', 285.00, 6.40, 42.00, 10.50, 1.20, 22.00, 0.400, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(122, 'Mákos guba', 225.00, 7.50, 35.00, 6.80, 4.50, 18.00, 0.300, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(123, 'Pilóta keksz', 495.00, 5.80, 64.00, 24.00, 2.50, 32.00, 0.500, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(124, 'Negro (klasszikus)', 384.00, 0.00, 96.00, 0.00, 0.00, 74.00, 0.000, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(125, 'Dunakavics', 485.00, 9.50, 65.00, 21.00, 4.20, 58.00, 0.050, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(126, 'Francia drazsé', 455.00, 3.50, 78.00, 14.00, 1.80, 72.00, 0.100, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(127, 'Tuc keksz (sós)', 483.00, 8.10, 62.00, 22.00, 2.30, 7.10, 2.800, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(128, 'Mogyi Pörkölt napraforgómag', 622.00, 24.00, 13.00, 53.00, 8.50, 2.50, 1.500, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(129, 'Monster Energy (Original)', 47.00, 0.00, 12.00, 0.00, 0.00, 11.00, 0.190, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(130, 'Hell Energy Drink', 46.00, 0.00, 11.00, 0.00, 0.00, 11.00, 0.200, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(131, 'Sió Almalé 100%', 45.00, 0.10, 10.50, 0.10, 0.00, 10.20, 0.000, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(132, 'Egri Bikavér (vörösbor)', 83.00, 0.00, 2.50, 0.00, 0.00, 0.20, 0.000, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(133, 'Unicum', 305.00, 0.00, 15.00, 0.00, 0.00, 15.00, 0.000, 'g', 'local', '2026-02-13 12:25:34', NULL, NULL),
+(134, 'Sertésborda bakonyi módra', 195.00, 16.20, 4.50, 12.80, 0.80, 1.20, 1.400, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(135, 'Brassói aprópecsenye', 245.00, 14.00, 18.50, 13.00, 2.10, 0.50, 1.600, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(136, 'Májgaluska leves', 65.00, 4.20, 6.80, 2.50, 0.40, 0.70, 1.300, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(137, 'Spenót főzelék főtt tojással', 115.00, 8.50, 7.20, 6.50, 3.20, 2.10, 1.200, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(138, 'Rántott sajt (tartár nélkül)', 320.00, 18.50, 16.00, 20.00, 0.50, 1.10, 1.800, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(139, 'Gombás rizottó', 145.00, 3.80, 26.00, 3.20, 1.20, 0.60, 0.900, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(140, 'Lazac filé (sült)', 208.00, 22.00, 0.00, 13.00, 0.00, 0.00, 0.150, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(141, 'Tonhal (konzerv, vizes)', 116.00, 26.00, 0.00, 1.00, 0.00, 0.00, 0.800, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(142, 'Füstölt makréla', 305.00, 18.50, 0.00, 25.00, 0.00, 0.00, 2.500, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(143, 'Sajtos pogácsa', 385.00, 10.20, 40.00, 20.00, 2.40, 2.80, 2.100, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(144, 'Hamburger (sima, gyorséttermi)', 255.00, 12.50, 28.00, 10.00, 1.50, 6.00, 1.300, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(145, 'Tortilla tekercs (üres)', 312.00, 8.50, 52.00, 7.50, 2.80, 2.10, 1.600, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(146, 'KitKat szelet', 518.00, 6.50, 58.50, 28.00, 2.00, 48.00, 0.150, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(147, 'Mars szelet', 448.00, 4.00, 69.00, 17.00, 1.20, 60.00, 0.400, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(148, 'Bounty (tejcsokis)', 487.00, 3.70, 59.00, 25.70, 1.60, 48.00, 0.250, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(149, 'Skittles', 404.00, 0.00, 91.00, 4.20, 0.00, 89.00, 0.020, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(150, 'Chio Hagymás-Tejfölös chips', 535.00, 6.00, 51.00, 33.00, 4.00, 3.20, 1.500, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(151, 'Sós pálcika (Ropi)', 380.00, 10.00, 75.00, 4.50, 3.50, 2.50, 4.500, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(152, 'Mogyoróvaj', 588.00, 25.00, 20.00, 50.00, 6.00, 9.00, 1.100, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(153, 'Gouda sajt', 356.00, 25.00, 2.20, 27.00, 0.00, 0.00, 1.900, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(154, 'Camembert sajt', 300.00, 19.80, 0.50, 24.00, 0.00, 0.50, 2.000, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(155, 'Zabpehely (száraz)', 389.00, 16.90, 66.00, 6.90, 10.60, 0.00, 0.010, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(156, 'Méz', 304.00, 0.30, 82.00, 0.00, 0.00, 82.00, 0.010, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(157, 'Sprite', 38.00, 0.00, 9.00, 0.00, 0.00, 9.00, 0.010, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(158, 'Fanta Narancs', 48.00, 0.00, 12.00, 0.00, 0.00, 12.00, 0.010, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(159, 'Cappuccino (cukor nélkül)', 35.00, 2.50, 4.50, 1.50, 0.00, 4.00, 0.100, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL),
+(160, 'Pálinka (50%)', 245.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.000, 'g', 'local', '2026-02-13 12:58:10', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -207,13 +276,6 @@ CREATE TABLE `support_tickets` (
   `status` enum('Open','Closed') DEFAULT 'Open',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- A tábla adatainak kiíratása `support_tickets`
---
-
-INSERT INTO `support_tickets` (`id`, `user_id`, `subject`, `message`, `category`, `status`, `created_at`) VALUES
-(2, 9, 'teszt', 'kiki', 'Feedback', 'Closed', '2026-02-11 10:36:56');
 
 -- --------------------------------------------------------
 
@@ -239,13 +301,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `premium`, `height`, `weight`, `age`, `gender`, `theme`) VALUES
-(1, 'Remek Elek', 'remekelek@gmail.com', 'remekelek123', 0, NULL, NULL, NULL, NULL, 'light'),
-(2, 'Pahotsa Henrik', 'henrikabest@gmail.com', 'henrikhenrik123', 1, NULL, NULL, NULL, NULL, 'light'),
-(3, 'nigger', 'nyomorekvagyok@gmail.com', 'csorba', 0, NULL, NULL, NULL, NULL, 'light'),
-(4, 'nigger', 'nyomorekvagyok@gmail.com', 'csorba', 0, NULL, NULL, NULL, NULL, 'light'),
 (6, 'Schnepp Ádám', 'adam@gmail.com', '$2y$10$xwfF0Fdt4mRSH8xZS3vuu.FhdGnRfVhDTa496douxc4lQcQ77qSLG', 1, 170, 95, 19, 'male', 'light'),
-(7, 'Szőke Császár Bálint', 'szokebalintdeazeredeti@gmail.com', '$2y$10$smFWpselm2qSQ.3lJqj6lODwutnZnscaOQq1cnEUjDoKkDfBoVPe.', 0, 120, 140, 12, 'female', 'light'),
-(8, 'nigger', 'nigger@gmail.com', '$2y$10$mxUtxDgmsP2eSH28zszhseoqXhcph6qyphWld3czU5AgvGIWC4Jd6', 1, 200, 67, 35, 'male', 'light'),
 (9, 'csorba', 'admin@gmail.com', '$2y$10$pkOxgkEza6da7Gk6TW4vDemHqVeeSiiE3yIAGMIZklnrZ0fD5e/da', 0, 180, 75, 20, 'male', 'light');
 
 -- --------------------------------------------------------
@@ -268,22 +324,11 @@ CREATE TABLE `user_food_log` (
 --
 
 INSERT INTO `user_food_log` (`id`, `user_id`, `food_id`, `quantity`, `log_date`, `created_at`) VALUES
-(1, 1, 1, 200.00, '2026-01-22', '2026-01-22 12:48:18'),
-(2, 1, 2, 50.00, '2026-01-22', '2026-01-22 12:48:18'),
-(3, 2, 4, 250.00, '2026-01-22', '2026-01-22 12:48:18'),
 (4, 6, 1, 110.00, '2026-01-28', '2026-01-28 11:23:19'),
-(7, 7, 16, 100.00, '2026-01-28', '2026-01-28 13:30:30'),
-(8, 7, 6, 100.00, '2026-01-28', '2026-01-28 13:30:49'),
-(9, 7, 11, 500.00, '2026-01-28', '2026-01-28 13:31:11'),
-(10, 7, 34, 500.00, '2026-01-28', '2026-01-28 13:31:41'),
-(12, 7, 37, 263.00, '2026-01-30', '2026-01-30 12:17:55'),
 (13, 6, 37, 263.00, '2026-01-30', '2026-01-30 13:51:36'),
 (14, 6, 37, 263.00, '2026-02-04', '2026-02-04 09:04:59'),
-(15, 6, 38, 89.00, '2026-02-04', '2026-02-04 13:16:39'),
-(21, 8, 20, 100.00, '2026-02-11', '2026-02-11 08:34:58'),
 (34, 9, 53, 153.00, '2026-02-11', '2026-02-11 14:07:58'),
-(35, 9, 53, 150.00, '2026-02-11', '2026-02-11 14:09:03'),
-(37, 9, 74, 150.00, '2026-02-11', '2026-02-11 14:10:16');
+(35, 9, 53, 150.00, '2026-02-11', '2026-02-11 14:09:03');
 
 -- --------------------------------------------------------
 
@@ -384,13 +429,13 @@ ALTER TABLE `favorites`
 -- AUTO_INCREMENT a táblához `feedbacks`
 --
 ALTER TABLE `feedbacks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT a táblához `foods`
 --
 ALTER TABLE `foods`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
 
 --
 -- AUTO_INCREMENT a táblához `support_tickets`
