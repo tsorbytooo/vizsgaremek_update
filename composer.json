@@ -1,0 +1,12 @@
+{
+    "name": "caloria-center/app",
+    "description": "Caloria Center projekt",
+    "require": {
+        "phpmailer/phpmailer": "^6.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "PHPMailer\\PHPMailer\\": "vendor/phpmailer/phpmailer/src/"
+        }
+    }
+}

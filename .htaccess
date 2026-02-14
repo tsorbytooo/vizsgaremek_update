@@ -1,15 +1,7 @@
 RewriteEngine On
-# Módosítva a te elérési utadra:
-RewriteBase /vizsgaremek_update/
+RewriteBase /
 
-# 1. Ha valaki .php kiterjesztéssel hívná meg (pl. dashboard.php), eldobjuk a kiterjesztést (301 redirect)
-# Kivéve, ha belső átirányítás történik (ez akadályozza meg a hurkot)
-RewriteCond %{ENV:REDIRECT_STATUS} ^$
-RewriteCond %{REQUEST_FILENAME} -f
-RewriteCond %{REQUEST_URI} \.php$
-RewriteRule ^(.*)\.php$ $1 [R=301,L]
-
-# 2. Egyedi magyar nevek (Alias-ok)
+# 1. Ha beírják: 'kezdolap', és létezik 'dashboard.php', akkor azt szolgálja ki
 RewriteRule ^kezdolap$ dashboard.php [L,QSA]
 RewriteRule ^premium$ premium.php [L,QSA]
 RewriteRule ^admin-panel$ admin.php [L,QSA]
@@ -26,10 +18,8 @@ RewriteRule ^regisztracio$ register.php [L,QSA]
 RewriteRule ^rolunk$ about.php [L,QSA]
 RewriteRule ^etkezeseim$ log.php [L,QSA]
 
-# 3. Általános szabály a kiterjesztés nélküli eléréshez
-# Ha beírják: 'valami', és létezik 'valami.php', akkor azt szolgálja ki
+# 2. Általános szabály a kiterjesztés nélküli eléréshez (pl. login -> login.php)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
-# Kibővített szabály, hogy az alútvonalakat (REST) is jobban kezelje
 RewriteRule ^(.+)$ $1.php [L,QSA]

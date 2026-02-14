@@ -124,7 +124,13 @@ if (isset($_POST['add_combined_to_log'])) {
     $food_id = (int)$_POST['food_id'];
     $extra_grams = (float)$_POST['quantity'];
     $pieces = (float)$_POST['pieces'];
-    $piece_weight = 150; 
+
+    // Ha extra grammok vannak, akkor ne adjunk hozzá alap súlyt
+    if ($extra_grams > 0) {
+        $piece_weight = 0;
+    } else {
+        $piece_weight = 150;
+    }
     $total_qty = ($pieces * $piece_weight) + $extra_grams;
 
     if ($total_qty > 0) {
@@ -650,7 +656,7 @@ $percent = ($limit > 0) ? ($current_cal / $limit) * 100 : 0;
                         </div>
                         <label style="font-size: 12px; color: var(--text-muted);">Kép feltöltése (opcionális):</label>
                         <input type="file" name="food_image" accept="image/*">
-                        <button type="submit" name="add_custom_food" class="btn-primary">Hozzáadás</button>
+                        <button type="submit" name="add_custom_food" class="btn-primary">Hozzáadásssss</button>
                     </form>
                 </div>
             <?php endif; ?>

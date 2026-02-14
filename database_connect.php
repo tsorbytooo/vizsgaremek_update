@@ -1,8 +1,8 @@
 <?php
-$servername = "localhost";
-$username = "csorba";
-$password = "csorba";
-$dbname = "caloria_center";
+$servername = getenv('DB_HOST') ?: "db";
+$username = getenv('DB_USER') ?: "csorba";
+$password = getenv('DB_PASSWORD') ?: "csorba";
+$dbname = getenv('DB_NAME') ?: "caloria_center";
 
 // Kapcsolat létrehozása
 $conn = mysqli_connect($servername, $username, $password, $dbname);

@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # Webszerver (PHP + Apache)
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=csorba
+      - DB_PASSWORD=csorba
+      - DB_NAME=caloria_center
+
+  # Adatbázis (MySQL)
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: caloria_center
+      MYSQL_USER: csorba
+      MYSQL_PASSWORD: csorba
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      # Automatikusan betölti az SQL fájlodat az induláskor:
+      - ./caloria_center.sql:/docker-entrypoint-initdb.d/caloria_center.sql
+
+volumes:
+  db_data:
