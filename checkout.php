@@ -45,7 +45,7 @@ if (isset($_POST['complete_payment'])) {
                 <p><strong>Számlázási cím:</strong> $address</p>
                 <p><strong>Összeg:</strong> 4 990 Ft</p>
                 <br>
-                <p>Üdvözlettel,<br>A Kalória Center csapata</p>
+                <p>Üdvözlettel,<br>A Caloria Center csapata</p>
             </div>";
 
         $mail->send();

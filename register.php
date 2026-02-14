@@ -1,4 +1,12 @@
 <?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'PHPMailer/Exception.php';
+require 'PHPMailer/PHPMailer.php';
+require 'PHPMailer/SMTP.php';
+
 session_start();
 require 'database_connect.php';
 
@@ -8,30 +16,75 @@ if (isset($_POST['reg'])) {
     // Adatok tisztítása
     $name = mysqli_real_escape_string($conn, $_POST['name']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $password = $_POST['password'];
+    $confirm_password = $_POST['confirm_password'];
     $height = (int)$_POST['height'];
     $weight = (int)$_POST['weight'];
     $age = (int)$_POST['age'];
     $gender = mysqli_real_escape_string($conn, $_POST['gender']);
 
-    // Ellenőrizzük, létezik-e már
-    $check_email = mysqli_query($conn, "SELECT id FROM users WHERE email='$email'");
+    // Jelszó ellenőrzés
+    if ($password !== $confirm_password) {
+        $error = "A két jelszó nem egyezik meg!";
+    }
+    // Jelszó hossz ellenőrzés (opcionális)
+    elseif (strlen($password) < 6) {
+        $error = "A jelszónak legalább 6 karakter hosszúnak kell lennie!";
+    }
+    else {
+        // Ellenőrizzük, létezik-e már
+        $check_email = mysqli_query($conn, "SELECT id FROM users WHERE email='$email'");
 
-    if (mysqli_num_rows($check_email) > 0) {
-        $error = "Ez az e-mail cím már regisztrálva van!";
-    } else {
-        // AZ SQL FÁJLOD ALAPJÁN EZ A PONTOS MEZŐSORREND ÉS LISTA
-        // Hozzáadtuk a 'premium' (0) és a 'theme' ('dark') értékeket is
-        $sql = "INSERT INTO users (name, email, password, height, weight, age, gender, premium, theme) 
-                VALUES ('$name', '$email', '$password', $height, $weight, $age, '$gender', 0, 'dark')";
-
-        if (mysqli_query($conn, $sql)) {
-            // Ha sikerült a mentés, CSAK AKKOR irányítunk át
-            header("Location: login.php?msg=success");
-            exit();
+        if (mysqli_num_rows($check_email) > 0) {
+            $error = "Ez az e-mail cím már regisztrálva van!";
         } else {
-            // Ha itt hiba van, azt KI KELL ÍRNIA a képernyőre!
-            $error = "Adatbázis hiba: " . mysqli_error($conn);
+            // Jelszó hash-elése
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+            
+            $sql = "INSERT INTO users (name, email, password, height, weight, age, gender, premium, theme) 
+                    VALUES ('$name', '$email', '$hashed_password', $height, $weight, $age, '$gender', 0, 'dark')";
+
+            if (mysqli_query($conn, $sql)) {
+                
+                // --- E-MAIL KÜLDÉS GMAIL-EL ---
+                $mail = new PHPMailer(true);
+
+                try {
+                    $mail->isSMTP();
+                    $mail->Host       = 'smtp.gmail.com';
+                    $mail->SMTPAuth   = true;
+                    $mail->Username   = 'kaloriacenter@gmail.com'; // <--- IDE ÍRD A SAJÁT CÍMED!
+                    $mail->Password   = 'azig yhrm hqpm jgwu';      // <--- A JELSZÓ A KÉPEDRŐL
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port       = 587;
+                    $mail->CharSet    = 'UTF-8';
+
+                    $mail->setFrom('noreply@kaloriacenter.hu', 'Caloria Center');
+                    $mail->addAddress($email, $name);
+
+                    $mail->isHTML(true);
+                    $mail->Subject = 'Sikeres Regisztráció - Caloria Center';
+                    $mail->Body    = "
+                        <div style='font-family: Arial; padding: 20px; border: 1px solid #eee; border-radius: 10px;'>
+                            <h2 style='color: #10b981;'>Sikeres Regisztráció - Caloria Center</h2>
+                            <p>Kedves $name!</p>
+                            <p>Köszönjük, hogy minket választottál az egészséged megőrzéséhez!</p>
+                            <p>A regisztrációd sikeresen lezajlott. Mostantól nyomon követheted a napi kalóriabeviteledet és a vízfogyasztásodat.</p>
+                            <p>Sok sikert az eléréseidhez!</p>
+                            <br>
+                            <p>Üdvözlettel,<br>A Caloria Center csapata</p>
+                        </div>";
+
+                    $mail->send();
+                } catch (Exception $e) {
+                    // Itt nem állítjuk meg a folyamatot, ha az email nem megy el, a regisztráció már kész
+                }
+
+                header("Location: login.php?msg=success");
+                exit();
+            } else {
+                $error = "Adatbázis hiba: " . mysqli_error($conn);
+            }
         }
     }
 }
@@ -40,21 +93,12 @@ if (isset($_POST['reg'])) {
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <!-- Karakterkódolás beállítása -->
     <meta charset="UTF-8">
-
-    <!-- Reszponzív megjelenítés mobil eszközökön -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Oldal címe -->
     <title>Regisztráció</title>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="theme-handler.js"></script>
-
     <style>
-        /* 
-            CSS változók definiálása az egységes színkezeléshez 
-        */
         :root {
             --primary: #5090d3;
             --bg-color: #0f1428;
@@ -62,7 +106,6 @@ if (isset($_POST['reg'])) {
             --border-color: rgba(255, 255, 255, 0.1);
         }
 
-        /* Oldal alapstílusa */
         body {
             margin: 0;
             min-height: 100vh;
@@ -75,7 +118,6 @@ if (isset($_POST['reg'])) {
             box-sizing: border-box;
         }
 
-        /* A regisztrációs kártya megjelenése */
         .login-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(15px);
@@ -89,27 +131,23 @@ if (isset($_POST['reg'])) {
             text-align: center;
         }
 
-        /* Főcím stílusa */
         h2 { 
             color: white; 
             margin-bottom: 5px; 
             font-weight: 500;
         }
 
-        /* Alcím stílusa */
         .subtitle {
             font-size: 13px;
             color: rgba(255, 255, 255, 0.6);
             margin-bottom: 25px;
         }
 
-        /* Űrlap konténer */
         .form-container {
             width: 100%;
             text-align: left;
         }
 
-        /* Címkék stílusa */
         label {
             display: block;
             color: rgba(255, 255, 255, 0.8);
@@ -118,20 +156,33 @@ if (isset($_POST['reg'])) {
             margin-left: 5px;
         }
 
-        /* Kétoszlopos sor */
+        /* --- Jelszó mutató stílusok --- */
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #333;
+            z-index: 10;
+        }
+
         .form-row {
             display: flex;
             gap: 15px;
             margin-bottom: 5px;
         }
 
-        /* Űrlap mezők csoportja */
         .form-group {
             flex: 1;
             margin-bottom: 12px;
         }
 
-        /* Input és select mezők stílusa */
         input, select {
             width: 100%;
             padding: 10px 12px;
@@ -144,7 +195,6 @@ if (isset($_POST['reg'])) {
             color: #333;
         }
 
-        /* Gomb stílusa */
         button {
             width: 100%;
             padding: 12px;
@@ -159,20 +209,17 @@ if (isset($_POST['reg'])) {
             font-size: 16px;
         }
 
-        /* Gomb hover állapot */
         button:hover { 
             background: #3b76b3;
             transform: translateY(-1px);
         }
 
-        /* Lábléc szöveg */
         .footer-text {
             margin-top: 20px;
             font-size: 13px;
             color: rgba(255, 255, 255, 0.6);
         }
 
-        /* Link stílus */
         .white-link {
             color: #ffffff !important;
             font-weight: bold;
@@ -180,13 +227,11 @@ if (isset($_POST['reg'])) {
             border-bottom: 1px solid #ffffff;
         }
 
-        /* Link hover állapot */
         .white-link:hover {
             color: var(--primary) !important;
             border-bottom-color: var(--primary);
         }
 
-        /* Hibaüzenet megjelenése */
         .error-msg { 
             background: rgba(231, 29, 54, 0.2);
             color: #ff4d4d;
@@ -197,6 +242,13 @@ if (isset($_POST['reg'])) {
             border: 1px solid rgba(231, 29, 54, 0.3);
             font-weight: bold;
         }
+
+        .password-hint {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: -8px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -205,13 +257,11 @@ if (isset($_POST['reg'])) {
         <h2>Regisztráció</h2>
         <p class="subtitle">Hozd létre a profilod a pontos számításhoz!</p>
 
-        <!-- Ha van hibaüzenet, itt jelenik meg -->
         <?php if($error): ?>
             <div class="error-msg"><?php echo $error; ?></div>
         <?php endif; ?>
 
         <div class="form-container">
-            <!-- JAVÍTVA: action üresen hagyva, hogy ugyanarra az URL-re küldjön, ahonnan érkezett -->
             <form action="" method="POST">
 
                 <div class="form-group">
@@ -226,8 +276,21 @@ if (isset($_POST['reg'])) {
                 
                 <div class="form-group">
                     <label>Jelszó</label>
-                    <input type="password" name="password" required placeholder="********">
+                    <div class="password-container">
+                        <input type="password" name="password" id="password" required placeholder="********" minlength="6">
+                        <i class="fa-solid fa-eye toggle-password" id="eye-main"></i>
+                    </div>
                 </div>
+                
+                <div class="form-group">
+                    <label>Jelszó megerősítése</label>
+                    <div class="password-container">
+                        <input type="password" name="confirm_password" id="confirm_password" required placeholder="********" minlength="6">
+                        <i class="fa-solid fa-eye toggle-password" id="eye-confirm"></i>
+                    </div>
+                </div>
+                
+                <div class="password-hint" id="password-match-message"></div>
 
                 <div class="form-row">
                     <div class="form-group">
@@ -254,17 +317,59 @@ if (isset($_POST['reg'])) {
                     </div>
                 </div>
 
-                <!-- Regisztrációs gomb -->
                 <button type="submit" name="reg">Fiók létrehozása</button>
             </form>
         </div>
 
         <p class="footer-text">
             Van már fiókod? <br>
-            <!-- JAVÍTVA: .htaccess alias használata a linkben -->
-            <a href="bejelentkezes" class="white-link">Jelentkezz be!</a>
+            <a href="login.php" class="white-link">Jelentkezz be!</a>
         </p>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirm_password');
+            const message = document.getElementById('password-match-message');
+            
+            const eyeMain = document.getElementById('eye-main');
+            const eyeConfirm = document.getElementById('eye-confirm');
+
+            // Jelszó láthatóság váltó funkció
+            function setupPasswordToggle(inputEl, eyeEl) {
+                eyeEl.addEventListener('click', function() {
+                    if (inputEl.type === 'password') {
+                        inputEl.type = 'text';
+                        eyeEl.classList.replace('fa-eye', 'fa-eye-slash');
+                    } else {
+                        inputEl.type = 'password';
+                        eyeEl.classList.replace('fa-eye-slash', 'fa-eye');
+                    }
+                });
+            }
+
+            setupPasswordToggle(password, eyeMain);
+            setupPasswordToggle(confirmPassword, eyeConfirm);
+            
+            function checkPasswordMatch() {
+                if (password.value && confirmPassword.value) {
+                    if (password.value === confirmPassword.value) {
+                        message.innerHTML = '✓ A jelszavak egyeznek';
+                        message.style.color = '#4ade80';
+                    } else {
+                        message.innerHTML = '✗ A jelszavak nem egyeznek';
+                        message.style.color = '#ff4d4d';
+                    }
+                } else { 
+                    message.innerHTML = '';
+                }
+            }
+            
+            password.addEventListener('keyup', checkPasswordMatch);
+            confirmPassword.addEventListener('keyup', checkPasswordMatch);
+        });
+    </script>
 
 </body>
 </html>
