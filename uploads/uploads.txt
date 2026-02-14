@@ -1,0 +1,1 @@
+Erre a mappára azért van szükség mert a felhasználó a manuálisan, általa hozzáadott ételhez tud képet is csatolni, azok a képek kerülnek ebbe a mappába.
